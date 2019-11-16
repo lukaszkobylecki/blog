@@ -9,5 +9,6 @@ namespace Blog.Core.Exceptions
         public static string InvalidEmail => "invalid_email";
         public static string InvalidPassword => "invalid_password";
         public static string InvalidUsername => "invalid_username";
+        public static string InvalidCategoryName => "invalid_category_name";
     }
 }

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands
 {
-    public class AuthenticatedCommandBase : IAuthenticatedCommand
+    public abstract class AuthenticatedCommandBase : IAuthenticatedCommand
     {
-        public int UserId { get; set; }
+        public int CurrentUserId { get; set; }
     }
 }

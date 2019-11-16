@@ -6,6 +6,6 @@ namespace Blog.Infrastructure.Commands.Users
 {
     public class DeleteUser : AuthenticatedCommandBase
     {
-
+        public int Id { get; set; }
     }
 }

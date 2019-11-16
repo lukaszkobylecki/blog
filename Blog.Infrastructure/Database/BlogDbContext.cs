@@ -11,7 +11,9 @@ namespace Blog.Infrastructure.Database
     public class BlogDbContext : DbContext
     {
         private readonly SqlServerSettings _settings;
+
         public DbSet<User> Users { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public BlogDbContext(DbContextOptions options, SqlServerSettings settings)
             : base(options)

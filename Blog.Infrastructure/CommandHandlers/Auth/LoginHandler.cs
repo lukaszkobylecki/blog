@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Blog.Common.Extensions;
 
 namespace Blog.Infrastructure.CommandHandlers.Auth
 {
@@ -27,11 +28,11 @@ namespace Blog.Infrastructure.CommandHandlers.Auth
 
         public async Task HandleAsync(Login command)
         {
-            await _authService.LoginAsync(command.Email, command.Password);
-            
-            var user = await _userService.GetAsync(command.Email);
+            await _authService.LoginAsync(command.Email.TrimToLower(), command.Password.TrimOrEmpty());
+
+            var user = await _userService.GetAsync(command.Email.TrimToLower());
             var token = _jwtHandler.CreateToken(user.Id);
-            _cache.SetJwt(command.TokenId, token);
+            _cache.SetShort(command.CacheKey, token);
         }
     }
 }

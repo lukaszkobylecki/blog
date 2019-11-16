@@ -18,5 +18,14 @@ namespace Blog.Infrastructure.Extensions
 
             return user;
         }
+
+        public static async Task<Category> GetOrFailAsync(this ICategoryRepository categoryRepository, int id)
+        {
+            var category = await categoryRepository.GetAsync(id);
+            if (category == null)
+                throw new ServiceException(ErrorCodes.CategoryNotFound, $"Category with id: '{id}' was not found.");
+
+            return category;
+        }
     }
 }

@@ -17,5 +17,8 @@ namespace Blog.Common.Extensions
 
         public static string TrimToLower(this string value)
             => value.OrEmpty().Trim().ToLower();
+
+        public static string TrimOrEmpty(this string value)
+            => value.OrEmpty().Trim();
     }
 }

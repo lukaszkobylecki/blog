@@ -6,6 +6,6 @@ namespace Blog.Infrastructure.Commands
 {
     public interface IAuthenticatedCommand : ICommand
     {
-        int UserId { get; set; }
+        int CurrentUserId { get; set; }
     }
 }

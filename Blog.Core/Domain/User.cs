@@ -6,9 +6,8 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class User
+    public class User : BaseEntity
     {
-        public int Id { get; private set; }
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Salt { get; private set; }
@@ -35,7 +34,7 @@ namespace Blog.Core.Domain
             if (email == Email)
                 return;
 
-            Email = email.TrimToLower();
+            Email = email;
             UpdateModificationDate();
         }
 

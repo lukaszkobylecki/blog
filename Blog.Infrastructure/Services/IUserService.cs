@@ -8,7 +8,7 @@ namespace Blog.Infrastructure.Services
 {
     public interface IUserService : IService
     {
-        Task RegisterAsync(string email, string password, string username);
+        Task CreateAsync(string email, string password, string username, string cacheKey);
         Task<UserDto> GetAsync(string email);
         Task<UserDto> GetAsync(int id);
         Task<IEnumerable<UserDto>> BrowseAsync();

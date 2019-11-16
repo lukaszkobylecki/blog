@@ -8,9 +8,7 @@ namespace Blog.Core.Exceptions
     {
         public string Code { get; protected set; }
 
-        protected BlogException()
-        {
-        }
+        protected BlogException() { }
 
         protected BlogException(string code)
         {
@@ -18,19 +16,13 @@ namespace Blog.Core.Exceptions
         }
 
         protected BlogException(string message, params object[] args) 
-            : this(string.Empty, message, args)
-        {
-        }
+            : this(string.Empty, message, args) { }
 
         protected BlogException(string code, string message, params object[] args) 
-            : this(null, code, message, args)
-        {
-        }
+            : this(null, code, message, args) { }
 
         protected BlogException(Exception innerException, string message, params object[] args)
-            : this(innerException, string.Empty, message, args)
-        {
-        }
+            : this(innerException, string.Empty, message, args){ }
 
         protected BlogException(Exception innerException, string code, string message, params object[] args)
             : base(string.Format(message, args), innerException)

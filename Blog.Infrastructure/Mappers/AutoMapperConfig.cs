@@ -13,6 +13,7 @@ namespace Blog.Infrastructure.Mappers
             => new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<User, UserDto>();
+                cfg.CreateMap<Category, CategoryDto>();
             })
             .CreateMapper();
     }

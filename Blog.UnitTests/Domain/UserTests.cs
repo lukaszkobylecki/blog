@@ -21,7 +21,7 @@ namespace Blog.UnitTests.Domain
         }
         
         [Test]
-        public void set_created_at_on_constructor()
+        public void Constructor_ShouldSetCreatedAt()
         {
             var now = DateTime.UtcNow;
             var user = new User("emai1@test.com", "password", "salt", "username");
@@ -30,26 +30,32 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_email_with_null_or_whitespace_string_throws_error()
+        public void Constructor_ShouldSetUpdatedAt()
         {
-            _user.Invoking(x => x.SetEmail(""))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidEmail);
+            var now = DateTime.UtcNow;
+            var user = new User("emai1@test.com", "password", "salt", "username");
 
-            _user.Invoking(x => x.SetEmail(null))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidEmail);
+            user.UpdatedAt.Should().BeAfter(now);
+        }
 
-            _user.Invoking(x => x.SetEmail("    "))
+
+        [Test]
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("   ")]
+        public void SetEmail_InvalidValue_ShouldThrowError(string email)
+        {
+            _user.Invoking(x => x.SetEmail(email))
                 .Should().Throw<DomainException>()
                 .Which.Code.Should().Be(ErrorCodes.InvalidEmail);
         }
 
         [Test]
-        public void set_email_with_valid_value_should_success()
+        public void SetEmail_ValidValue_ShouldSuccess()
         {
             var email = "email2@test.com";
             var lastUpdateTime = _user.UpdatedAt;
+            
             _user.SetEmail(email);
 
             _user.Email.Should().Be(email);
@@ -57,10 +63,11 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_email_with_same_value_should_not_change_anything()
+        public void SetEmail_SameValue_ShouldNotChangeAnything()
         {
             var actualEmail = _user.Email;
             var lastUpdateTime = _user.UpdatedAt;
+
             _user.SetEmail(actualEmail);
 
             _user.Email.Should().Be(actualEmail);
@@ -68,26 +75,22 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_username_with_null_or_whitespace_string_throws_error()
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("     ")]
+        public void SetUsername_InvalidValue_ShouldThrowError(string username)
         {
-            _user.Invoking(x => x.SetUsername(""))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidUsername);
-
-            _user.Invoking(x => x.SetUsername(null))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidUsername);
-
-            _user.Invoking(x => x.SetUsername("    "))
+            _user.Invoking(x => x.SetUsername(username))
                 .Should().Throw<DomainException>()
                 .Which.Code.Should().Be(ErrorCodes.InvalidUsername);
         }
 
         [Test]
-        public void set_username_with_valid_value_should_success()
+        public void SetUsername_ValidValue_ShouldSuccess()
         {
-            var username = "username2";
+            var username = "test";
             var now = DateTime.UtcNow;
+
             _user.SetUsername(username);
 
             _user.Username.Should().Be(username);
@@ -95,10 +98,11 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_username_with_same_value_should_not_change_anything()
+        public void SetUsername_SameValue_ShouldNotChangeAnything()
         {
             var actualUsername = _user.Username;
             var lastUpdateTime = _user.UpdatedAt;
+
             _user.SetUsername(_user.Username);
 
             _user.Username.Should().Be(actualUsername);
@@ -106,39 +110,26 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_password_with_null_or_whitespace_string_throws_error()
+        [TestCase("", "salt")]
+        [TestCase("   ", "salt")]
+        [TestCase(null, "salt")]
+        [TestCase("password", "")]
+        [TestCase("password", "   ")]
+        [TestCase("password", null)]
+        public void SetPassword_InvalidValues_ShouldThrowError(string password, string salt)
         {
-            _user.Invoking(x => x.SetPassword("", "x"))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
-
-            _user.Invoking(x => x.SetPassword(null, "x"))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
-
-            _user.Invoking(x => x.SetPassword("    ", "x"))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
-
-            _user.Invoking(x => x.SetPassword("x", ""))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
-
-            _user.Invoking(x => x.SetPassword("x", null))
-                .Should().Throw<DomainException>()
-                .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
-
-            _user.Invoking(x => x.SetPassword("x", "    "))
+            _user.Invoking(x => x.SetPassword(password, salt))
                 .Should().Throw<DomainException>()
                 .Which.Code.Should().Be(ErrorCodes.InvalidPassword);
         }
 
         [Test]
-        public void set_password_with_valid_values_should_success()
+        public void SetPassword_ValidValues_ShouldSuccess()
         {
             var password = "qwerty";
             var salt = "123456";
             var now = DateTime.UtcNow;
+
             _user.SetPassword(password, salt);
 
             _user.Password.Should().Be(password);
@@ -147,11 +138,12 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void set_password_with_same_value_should_not_change_anything()
+        public void SetPassword_SameValue_ShouldNotChangeAnything()
         {
             var actualPasword = _user.Password;
             var actualSalt = _user.Salt;
             var lastUpdateTime = _user.UpdatedAt;
+
             _user.SetPassword(actualPasword, actualSalt);
 
             _user.Password.Should().Be(actualPasword);

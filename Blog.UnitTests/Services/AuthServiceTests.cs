@@ -20,24 +20,22 @@ namespace Blog.UnitTests.Services
         private IAuthService _authService;
         private User _existingUser;
         private User _newUser;
-        private User _nullUser;
 
         [SetUp]
         public void SetUp()
         {
             _existingUser = new User("user1test.com", "password", "salt", "username");
             _newUser = new User("user2test.com", "password2", "salt2", "username2");
-            _nullUser = null;
 
             var userRepositoryMock = new Mock<IUserRepository>();
             userRepositoryMock.Setup(x => x.GetAsync(_existingUser.Email)).ReturnsAsync(_existingUser);
-            userRepositoryMock.Setup(x => x.GetAsync(_newUser.Email)).ReturnsAsync(_nullUser);
+            userRepositoryMock.Setup(x => x.GetAsync(_newUser.Email)).ReturnsAsync(() => null);
 
-            _authService = new AuthService(userRepositoryMock.Object, MockProvider.Encrypter().Object);
+            _authService = new AuthService(userRepositoryMock.Object, MockProvider.Encrypter());
         }
 
         [Test]
-        public async Task login_async_should_throw_error_when_user_with_given_email_does_not_exist()
+        public async Task LoginAsync_UserNotExist_ThrowsError()
         {
             await _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, _newUser.Password))
                 .Should()
@@ -46,7 +44,7 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public async Task authenticate_async_should_throw_error_when_user_with_given_email_exists_and_password_is_incorrect()
+        public async Task LoginAsync_UserExistsButPasswordIsIncorrect_ThrowsError()
         {
             await _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, "foo"))
                 .Should()
@@ -55,7 +53,7 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public async Task authenticate_async_should_success_with_valid_credentials()
+        public async Task LoginAsync_ValidCredentials_ShouldSuccess()
         {
             await _authService.Invoking(async x => await x.LoginAsync(_existingUser.Email, _existingUser.Password))
                 .Should()
