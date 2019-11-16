@@ -14,6 +14,7 @@ namespace Blog.Infrastructure.Database
 
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         public BlogDbContext(DbContextOptions options, SqlServerSettings settings)
             : base(options)

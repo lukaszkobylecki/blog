@@ -28,12 +28,11 @@ namespace Blog.Infrastructure.Services
             _eventPublisher = eventPublisher;
         }
 
-        public async Task<UserDto> GetAsync(string email)
+        public async Task<IEnumerable<UserDto>> BrowseAsync()
         {
-            var user = await _userRepository.GetAsync(email);
+            var users = await _userRepository.BrowseAsync();
 
-            return _mapper.Map<UserDto>(user);
-
+            return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
         public async Task<UserDto> GetAsync(int id)
@@ -43,11 +42,12 @@ namespace Blog.Infrastructure.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        public async Task<IEnumerable<UserDto>> BrowseAsync()
+        public async Task<UserDto> GetAsync(string email)
         {
-            var users = await _userRepository.BrowseAsync();
+            var user = await _userRepository.GetAsync(email);
 
-            return _mapper.Map<IEnumerable<UserDto>>(users);
+            return _mapper.Map<UserDto>(user);
+
         }
 
         public async Task CreateAsync(string email, string password, string username, string cacheKey)
@@ -60,7 +60,7 @@ namespace Blog.Infrastructure.Services
             var hash = _encrypter.GetHash(password, salt);
 
             user = new User(email, hash, salt, username);
-            await _userRepository.AddAsync(user);
+            await _userRepository.CreateAsync(user);
 
             var dto = _mapper.Map<UserDto>(user);
             await _eventPublisher.EntityCreated(user, dto, cacheKey);

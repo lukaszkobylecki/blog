@@ -12,6 +12,11 @@ namespace Blog.IntegrationTests.Controllers
 {
     public class AuthControllerTests : ControllerTestsBase
     {
+        public AuthControllerTests()
+        {
+            BaseUrl = "auth";
+        }
+
         [Test]
         [TestCase("user1@email.com", "password")]
         [TestCase("   user1@email.com   ", "  password   ")]
@@ -24,7 +29,7 @@ namespace Blog.IntegrationTests.Controllers
             };
             var payload = GetPayload(command);
 
-            var response = await Client.PostAsync("auth", payload);
+            var response = await Client.PostAsync(BaseUrl, payload);
             var jwt = await DeserializeAsync<JwtDto>(response);
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -46,7 +51,7 @@ namespace Blog.IntegrationTests.Controllers
             };
             var payload = GetPayload(command);
 
-            var response = await Client.PostAsync("auth", payload);
+            var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }

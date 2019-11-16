@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Blog.Infrastructure.Commands.Users;
+using Blog.Infrastructure.Commands.User;
 using Blog.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace Blog.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.BrowseAsync();
 

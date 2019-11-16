@@ -27,5 +27,14 @@ namespace Blog.Infrastructure.Extensions
 
             return category;
         }
+
+        public static async Task<Post> GetOrFailAsync(this IPostRepository postRepository, int id)
+        {
+            var post = await postRepository.GetAsync(id);
+            if (post == null)
+                throw new ServiceException(ErrorCodes.PostNotFound, $"Post with id: '{id}' was not found.");
+
+            return post;
+        }
     }
 }

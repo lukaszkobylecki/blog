@@ -50,40 +50,11 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public void CreateAsync_ExistingUser_ShouldThrowError()
+        public async Task BrowseAsync_ShouldInvokeUserRepositoryBrowseAsync()
         {
-            var cacheKey = Guid.NewGuid().ToString();
+            await _userService.BrowseAsync();
 
-            _userService.Invoking(async x => await x.CreateAsync(
-                    _existingUser.Object.Email, _existingUser.Object.Password,
-                    _existingUser.Object.Username, cacheKey))
-                .Should()
-                .Throw<ServiceException>()
-                .And.Code.Should().Be(ErrorCodes.EmailInUse);
-
-            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Never);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<User>>()), Times.Never);
-        }
-
-        [Test]
-        public void CreateAsync_NewUser_ShouldSuccess()
-        {
-            _userService.Invoking(async x => await x.CreateAsync(_newUser.Object.Email, _newUser.Object.Password, _newUser.Object.Username, _cacheKey))
-                .Should()
-                .NotThrow();
-
-            _userRepositoryMock.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<User>>()), Times.Once);
-        }
-
-        [Test]
-        public async Task GetAsyncByEmail_ShouldInvokeUserRepositoryGetAsync()
-        {
-            var email = MockProvider.RandomString;
-
-            await _userService.GetAsync(email);
-
-            _userRepositoryMock.Verify(x => x.GetAsync(email), Times.Once);
+            _userRepositoryMock.Verify(x => x.BrowseAsync(), Times.Once);
         }
 
         [Test]
@@ -97,11 +68,40 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public async Task BrowseAsync_ShouldInvokeUserRepositoryBrowseAsync()
+        public async Task GetAsyncByEmail_ShouldInvokeUserRepositoryGetAsync()
         {
-            await _userService.BrowseAsync();
+            var email = MockProvider.RandomString;
 
-            _userRepositoryMock.Verify(x => x.BrowseAsync(), Times.Once);
+            await _userService.GetAsync(email);
+
+            _userRepositoryMock.Verify(x => x.GetAsync(email), Times.Once);
+        }
+
+        [Test]
+        public void CreateAsync_ExistingUser_ShouldThrowError()
+        {
+            var cacheKey = Guid.NewGuid().ToString();
+
+            _userService.Invoking(async x => await x.CreateAsync(
+                    _existingUser.Object.Email, _existingUser.Object.Password,
+                    _existingUser.Object.Username, cacheKey))
+                .Should()
+                .Throw<ServiceException>()
+                .And.Code.Should().Be(ErrorCodes.EmailInUse);
+
+            _userRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<User>()), Times.Never);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<User>>()), Times.Never);
+        }
+
+        [Test]
+        public void CreateAsync_NewUser_ShouldSuccess()
+        {
+            _userService.Invoking(async x => await x.CreateAsync(_newUser.Object.Email, _newUser.Object.Password, _newUser.Object.Username, _cacheKey))
+                .Should()
+                .NotThrow();
+
+            _userRepositoryMock.Verify(x => x.CreateAsync(It.IsAny<User>()), Times.Once);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<User>>()), Times.Once);
         }
 
         [Test]
@@ -124,6 +124,7 @@ namespace Blog.UnitTests.Services
                 .And.Code.Should().Be(ErrorCodes.UserNotFound);
 
             _userRepositoryMock.Verify(x => x.DeleteAsync(It.IsAny<User>()), Times.Never);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityDeletedEvent<User>>()), Times.Never);
         }
     }
 }

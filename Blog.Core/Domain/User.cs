@@ -6,25 +6,22 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class User : BaseEntity
+    public class User : DateTrackingEntityBase
     {
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Salt { get; private set; }
         public string Username { get; private set; }
-        public DateTime CreatedAt { get; private set; }
-        public DateTime UpdatedAt { get; private set; }
 
         protected User() { }
 
         public User(string email, string password,
             string salt, string username)
+            : base()
         {
             SetEmail(email);
             SetPassword(password, salt);
             SetUsername(username);
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
         }
 
         public void SetEmail(string email)
@@ -62,8 +59,5 @@ namespace Blog.Core.Domain
             Username = username;
             UpdateModificationDate();
         }
-
-        private void UpdateModificationDate()
-            => UpdatedAt = DateTime.UtcNow;
     }
 }

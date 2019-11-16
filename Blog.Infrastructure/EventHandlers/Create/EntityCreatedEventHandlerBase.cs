@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Infrastructure.EventHandlers.Create
 {
-    public abstract class EntityCreatedEventHandlerBase<T> : IEventHandler<EntityCreatedEvent<T>> where T : BaseEntity
+    public abstract class EntityCreatedEventHandlerBase<T> : IEventHandler<EntityCreatedEvent<T>> where T : IEntity 
     {
         protected readonly IMemoryCache Cache;
 

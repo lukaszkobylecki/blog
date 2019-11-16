@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blog.Infrastructure.Events
 {
-    public class EntityDeletedEvent<T> : IEvent where T : BaseEntity
+    public class EntityDeletedEvent<T> : IEvent where T : IEntity
     {
         public T Entity { get; set; }
 

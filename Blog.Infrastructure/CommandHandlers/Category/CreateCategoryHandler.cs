@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Infrastructure.CommandHandlers.Categories
+namespace Blog.Infrastructure.CommandHandlers.Category
 {
     public class CreateCategoryHandler : ICommandHandler<CreateCategory>
     {

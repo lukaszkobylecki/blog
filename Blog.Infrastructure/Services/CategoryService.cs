@@ -26,6 +26,13 @@ namespace Blog.Infrastructure.Services
             _eventPublisher = eventPublisher;
         }
 
+        public async Task<IEnumerable<CategoryDto>> BrowseAsync()
+        {
+            var categories = await _categoryRepository.BrowseAsync();
+
+            return _mapper.Map<IEnumerable<CategoryDto>>(categories);
+        }
+
         public async Task<CategoryDto> GetAsync(int id)
         {
             var category = await _categoryRepository.GetAsync(id);
@@ -39,13 +46,6 @@ namespace Blog.Infrastructure.Services
 
             var dto = _mapper.Map<CategoryDto>(category);
             await _eventPublisher.EntityCreated(category, dto, cacheKey);
-        }
-
-        public async Task<IEnumerable<CategoryDto>> BrowseAsync()
-        {
-            var categories = await _categoryRepository.BrowseAsync();
-
-            return _mapper.Map<IEnumerable<CategoryDto>>(categories);
         }
 
         public async Task DeleteAsync(int id)

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Blog.Infrastructure.DTO
 {
-    public class CategoryDto : DateTrackingEntityDtoBase
+    public abstract class EntityDtoBase
     {
-        public string Name { get; set; }
+        public int Id { get; set; }
     }
 }

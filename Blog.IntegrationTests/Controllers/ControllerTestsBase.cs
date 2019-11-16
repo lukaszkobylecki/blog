@@ -2,7 +2,6 @@
 using Blog.IntegrationTests.Results;
 using Blog.Infrastructure.Commands.Auth;
 using Blog.Infrastructure.DTO;
-using Blog.Api;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +11,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Blog.Api;
 
 namespace Blog.IntegrationTests.Controllers
 {
@@ -20,6 +20,8 @@ namespace Blog.IntegrationTests.Controllers
         protected readonly TestServer Server;
 
         protected readonly HttpClient Client;
+
+        protected string BaseUrl;
 
         public ControllerTestsBase()
         {

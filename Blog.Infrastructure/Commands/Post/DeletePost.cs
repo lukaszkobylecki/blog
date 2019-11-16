@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Infrastructure.Commands.Users
+namespace Blog.Infrastructure.Commands.Post
 {
-    public class DeleteUser : AuthenticatedCommandBase
+    public class DeletePost : ICommand
     {
         public int Id { get; set; }
     }

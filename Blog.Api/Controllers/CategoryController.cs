@@ -51,7 +51,7 @@ namespace Blog.Api.Controllers
 
             var category = _cache.Get<CategoryDto>(command.CacheKey);
 
-            return Created($"category/{category.Id}", null);
+            return Created($"category/{category.Id}", category);
         }
 
         [HttpDelete]

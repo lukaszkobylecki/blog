@@ -19,16 +19,16 @@ namespace Blog.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<User>> BrowseAsync()
+            => await _dbContext.Users.ToListAsync();
+
         public async Task<User> GetAsync(int id)
             => await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
 
         public async Task<User> GetAsync(string email)
             => await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email);
 
-        public async Task<IEnumerable<User>> BrowseAsync()
-            => await _dbContext.Users.ToListAsync();
-
-        public async Task AddAsync(User user)
+        public async Task CreateAsync(User user)
         {
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();

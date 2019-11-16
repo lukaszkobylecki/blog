@@ -10,11 +10,14 @@ namespace Blog.Infrastructure.Services
     {
         private readonly IUserService _userService;
         private readonly ICategoryService _categoryService;
+        private readonly IPostService _postService;
 
-        public DataInitializer(IUserService userService, ICategoryService categoryService)
+        public DataInitializer(IUserService userService, ICategoryService categoryService,
+            IPostService postService)
         {
             _userService = userService;
             _categoryService = categoryService;
+            _postService = postService;
         }
 
         public async Task SeedDataAsync()
@@ -27,6 +30,11 @@ namespace Blog.Infrastructure.Services
             {
                 await _userService.CreateAsync($"user{i}@email.com", "password", $"user{i}", Guid.NewGuid().ToString());
                 await _categoryService.CreateAsync($"category{i}", Guid.NewGuid().ToString());
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                await _postService.CreateAsync($"title{i}", $"content{i}", (i % 5) + 1, Guid.NewGuid().ToString());
             }
         }
     }

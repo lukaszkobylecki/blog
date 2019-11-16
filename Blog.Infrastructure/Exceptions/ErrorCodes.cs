@@ -10,5 +10,6 @@ namespace Blog.Infrastructure.Exceptions
         public static string InvalidCredentials => "invalid_credentials";
         public static string UserNotFound => "user_not_found";
         public static string CategoryNotFound => "category_not_found";
+        public static string PostNotFound => "post_not_found";
     }
 }

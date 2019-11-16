@@ -6,31 +6,27 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class Category : BaseEntity
+    public class Category : DateTrackingEntityBase
     {
-        public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public string Name { get; private set; }
 
         protected Category() { }
 
-        public Category(string name)
+        public Category(string name) 
+            : base()
         {
             SetName(name);
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
         }
 
         public void SetName(string name)
         {
             if (name.Empty())
                 throw new DomainException(ErrorCodes.InvalidCategoryName, "Category name can not be empty.");
+            if (name == Name)
+                return;
 
             Name = name;
             UpdateModificationDate();
         }
-
-        private void UpdateModificationDate()
-            => UpdatedAt = DateTime.UtcNow;
     }
 }

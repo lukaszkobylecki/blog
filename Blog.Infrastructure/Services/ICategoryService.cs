@@ -9,9 +9,9 @@ namespace Blog.Infrastructure.Services
 {
     public interface ICategoryService : IService
     {
+        Task<IEnumerable<CategoryDto>> BrowseAsync();
         Task<CategoryDto> GetAsync(int id);
         Task CreateAsync(string name, string cacheKey);
-        Task<IEnumerable<CategoryDto>> BrowseAsync();
         Task DeleteAsync(int id);
     }
 }

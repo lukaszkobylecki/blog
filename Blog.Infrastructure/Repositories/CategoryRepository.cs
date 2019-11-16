@@ -18,6 +18,9 @@ namespace Blog.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<IEnumerable<Category>> BrowseAsync()
+            => await _dbContext.Categories.ToListAsync();
+
         public async Task<Category> GetAsync(int id)
             => await _dbContext.Categories.SingleOrDefaultAsync(x => x.Id == id);
 
@@ -26,10 +29,6 @@ namespace Blog.Infrastructure.Repositories
             await _dbContext.AddAsync(category);
             await _dbContext.SaveChangesAsync();
         }
-
-        public async Task<IEnumerable<Category>> BrowseAsync()
-            => await _dbContext.Categories.ToListAsync();
-
         public async Task DeleteAsync(Category category)
         {
             _dbContext.Remove(category);

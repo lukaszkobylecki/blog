@@ -8,10 +8,10 @@ namespace Blog.Infrastructure.Repositories
 {
     public interface IUserRepository : IRepository
     {
+        Task<IEnumerable<User>> BrowseAsync();
         Task<User> GetAsync(int id);
         Task<User> GetAsync(string email);
-        Task AddAsync(User user);
-        Task<IEnumerable<User>> BrowseAsync();
+        Task CreateAsync(User user);
         Task DeleteAsync(User user);
     }
 }

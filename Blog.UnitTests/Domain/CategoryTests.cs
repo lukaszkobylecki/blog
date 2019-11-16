@@ -20,20 +20,12 @@ namespace Blog.UnitTests.Domain
         }
 
         [Test]
-        public void Constructor_ShouldSetCreatedAt()
-        {
-            var now = DateTime.UtcNow;
-            var user = new Category("category");
-
-            user.CreatedAt.Should().BeAfter(now);
-        }
-
-        [Test]
-        public void Constructor_ShouldSetUpdatedAt()
+        public void Constructor_ShouldSetDates()
         {
             var now = DateTime.UtcNow;
             var category = new Category("category");
 
+            category.CreatedAt.Should().BeAfter(now);
             category.UpdatedAt.Should().BeAfter(now);
         }
 
@@ -48,9 +40,10 @@ namespace Blog.UnitTests.Domain
                 .Which.Code.Should().Be(ErrorCodes.InvalidCategoryName);
         }
 
+        [Test]
         public void SetName_ValidValue_ShouldSuccess()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var name = "test";
 
             _category.SetName(name);
@@ -59,6 +52,7 @@ namespace Blog.UnitTests.Domain
             _category.UpdatedAt.Should().BeAfter(now);
         }
 
+        [Test]
         public void SetName_SameValue_ShouldNotChangeAnything()
         {
             var actualName = _category.Name;

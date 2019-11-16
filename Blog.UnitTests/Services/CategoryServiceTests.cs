@@ -38,6 +38,14 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
+        public async Task BrowseAsync_ShouldInvokeCategoryRepositoryBrowseAsync()
+        {
+            await _categoryService.BrowseAsync();
+
+            _categoryRepository.Verify(x => x.BrowseAsync(), Times.Once);
+        }
+
+        [Test]
         public async Task GetAsync_ShouldInvokeCategoryRepositoryGetAsync()
         {
             var id = MockProvider.RandomInt;
@@ -48,11 +56,14 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public async Task BrowseAsync_ShouldInvokeCategoryRepositoryBrowseAsync()
+        public void CreateAsync_ShouldSuccess()
         {
-            await _categoryService.BrowseAsync();
+            _categoryService.Invoking(async x => await x.CreateAsync(MockProvider.RandomString, MockProvider.RandomString))
+                .Should()
+                .NotThrow();
 
-            _categoryRepository.Verify(x => x.BrowseAsync(), Times.Once);
+            _categoryRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<Category>>()), Times.Once);
         }
 
         [Test]
@@ -75,17 +86,6 @@ namespace Blog.UnitTests.Services
                 .And.Code.Should().Be(ErrorCodes.CategoryNotFound);
 
             _categoryRepository.Verify(x => x.DeleteAsync(It.IsAny<Category>()), Times.Never);
-        }
-
-        [Test]
-        public void CreateAsync_ShouldSuccess()
-        {
-            _categoryService.Invoking(async x => await x.CreateAsync(MockProvider.RandomString, MockProvider.RandomString))
-                .Should()
-                .NotThrow();
-
-            _categoryRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<Category>>()), Times.Once);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Blog.Infrastructure.Commands.Users;
+﻿using Blog.Infrastructure.Commands.User;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -14,10 +14,15 @@ namespace Blog.IntegrationTests.Controllers
     [TestFixture]
     public class UserControllerTests : ControllerTestsBase
     {
+        public UserControllerTests()
+        {
+            BaseUrl = "user";
+        }
+
         [Test]
         public async Task GetUsers_ShouldReturnData()
         {
-            var result = await GetResource<IEnumerable<UserDto>>("user");
+            var result = await GetResource<IEnumerable<UserDto>>(BaseUrl);
 
             result.Response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             result.Data.Should().NotBeEmpty();
@@ -26,7 +31,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetUser_NotExisting_ShouldReturnNotFound()
         {
-            var result = await GetResource<UserDto>("user/123");
+            var result = await GetResource<UserDto>($"{BaseUrl}/123");
 
             result.Response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
         }
@@ -36,16 +41,17 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = 1;
 
-            var result = await GetResource<UserDto>($"user/{id}");
+            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().Be(id);
         }
 
         [Test]
-        public async Task CreateUser_NotExisting_ShouldBeCreated()
+        public async Task CreateUser_NotExisting_ShouldSuccess()
         {
             var id = 11;
+            var now = DateTime.UtcNow;
             var command = new CreateUser
             {
                 Email = "  user11@email.com  ",
@@ -53,14 +59,13 @@ namespace Blog.IntegrationTests.Controllers
                 Username = "  user11  "
             };
             var payload = GetPayload(command);
-            var now = DateTime.UtcNow;
             
-            var response = await Client.PostAsync("user", payload);
+            var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);
-            response.Headers.Location.ToString().Should().Be($"user/{id}");
+            response.Headers.Location.ToString().Should().Be($"{BaseUrl}/{id}");
 
-            var result = await GetResource<UserDto>($"user/{id}");
+            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().Be(11);
@@ -71,17 +76,27 @@ namespace Blog.IntegrationTests.Controllers
         }
 
         [Test]
-        public async Task CreateUser_Existing_ShouldReturnBadRequest()
+        [TestCase("user1@email.com", "bad-password", "user1")]
+        [TestCase("user100@email.com", "password", null)]
+        [TestCase("user100@email.com", "password", "")]
+        [TestCase("user100@email.com", "password", "  ")]
+        [TestCase("user100@email.com", null, "user100")]
+        [TestCase("user100@email.com", "", "user100")]
+        [TestCase("user100@email.com", "  ", "user100")]
+        [TestCase(null, "password", "user100")]
+        [TestCase("", "password", "user100")]
+        [TestCase("  ", "password", "user100")]
+        public async Task CreateUser_ExistingUserOrInvalidData_ShouldReturnBadRequest(string email, string password, string username)
         {
             var command = new CreateUser
             {
-                Email = "user1@email.com",
-                Password = "password",
-                Username = "user1"
+                Email = email,
+                Password = password,
+                Username = username
             };
             var payload = GetPayload(command);
 
-            var response = await Client.PostAsync("user", payload);
+            var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -89,17 +104,15 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeleteUser_Unauthorized_ShouldReturnUnauthorized()
         {
-            var response = await Client.DeleteAsync($"user/100");
+            var response = await Client.DeleteAsync($"{BaseUrl}/100");
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
         [Test]
         public async Task DeleteUser_NotExisting_ShouldReturnBadRequest()
         {
-            var id = 100;
-
             await AddAuthTokenAsync("user1@email.com", "password");
-            var response = await Client.DeleteAsync($"user/{id}");
+            var response = await Client.DeleteAsync($"{BaseUrl}/100");
             RemoveAuthToken();
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -111,12 +124,12 @@ namespace Blog.IntegrationTests.Controllers
             var id = 10;
 
             await AddAuthTokenAsync("user1@email.com", "password");
-            var response = await Client.DeleteAsync($"user/{id}");
+            var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
             RemoveAuthToken();
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-            var result = await GetResource<UserDto>($"user/{id}");
+            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

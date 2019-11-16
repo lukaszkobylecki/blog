@@ -1,12 +1,12 @@
 ﻿using Blog.Common.Extensions;
-using Blog.Infrastructure.Commands.Users;
+using Blog.Infrastructure.Commands.User;
 using Blog.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Blog.Infrastructure.CommandHandlers.Users
+namespace Blog.Infrastructure.CommandHandlers.User
 {
     public class CreateUserHandler : ICommandHandler<CreateUser>
     {
