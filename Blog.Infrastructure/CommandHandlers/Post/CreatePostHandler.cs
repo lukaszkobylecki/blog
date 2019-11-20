@@ -19,8 +19,8 @@ namespace Blog.Infrastructure.CommandHandlers.Post
 
         public async Task HandleAsync(CreatePost command)
         {
-            await _postService.CreateAsync(command.Title.TrimOrEmpty(), command.Content.TrimOrEmpty(),
-                command.CategoryId, command.CacheKey);
+            await _postService.CreateAsync(command.ResourceId, command.Title.TrimOrEmpty(), command.Content.TrimOrEmpty(),
+                command.CategoryId);
         }
     }
 }

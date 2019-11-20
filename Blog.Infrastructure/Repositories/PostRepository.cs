@@ -23,7 +23,7 @@ namespace Blog.Infrastructure.Repositories
                 .Include(x => x.Category)
                 .ToListAsync();
 
-        public async Task<Post> GetAsync(int id)
+        public async Task<Post> GetAsync(Guid id)
             => await _dbContext.Posts
                 .Include(x => x.Category)
                 .SingleOrDefaultAsync(x => x.Id == id);

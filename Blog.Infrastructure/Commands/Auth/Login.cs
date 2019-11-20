@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands.Auth
 {
-    public class Login : CacheableCommandBase
+    public class Login : ICommand
     {
+        public Request Request { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
     }

@@ -10,7 +10,7 @@ namespace Blog.Infrastructure.Extensions
 {
     public static class RepositoryExtensions
     {
-        public static async Task<User> GetOrFailAsync(this IUserRepository userRepository, int id)
+        public static async Task<User> GetOrFailAsync(this IUserRepository userRepository, Guid id)
         {
             var user = await userRepository.GetAsync(id);
             if (user == null)
@@ -19,7 +19,7 @@ namespace Blog.Infrastructure.Extensions
             return user;
         }
 
-        public static async Task<Category> GetOrFailAsync(this ICategoryRepository categoryRepository, int id)
+        public static async Task<Category> GetOrFailAsync(this ICategoryRepository categoryRepository, Guid id)
         {
             var category = await categoryRepository.GetAsync(id);
             if (category == null)
@@ -28,7 +28,7 @@ namespace Blog.Infrastructure.Extensions
             return category;
         }
 
-        public static async Task<Post> GetOrFailAsync(this IPostRepository postRepository, int id)
+        public static async Task<Post> GetOrFailAsync(this IPostRepository postRepository, Guid id)
         {
             var post = await postRepository.GetAsync(id);
             if (post == null)

@@ -13,9 +13,9 @@ namespace Blog.Api.Controllers
     public class ApiControllerBase : ControllerBase
     {
         private readonly ICommandDispatcher _commandDispatcher;
-        protected int UserId => User?.Identity?.IsAuthenticated == true
-            ? int.Parse(User.Identity.Name)
-            : 0;
+        protected Guid UserId => User?.Identity?.IsAuthenticated == true
+            ? Guid.Parse(User.Identity.Name)
+            : Guid.Empty;
 
         public ApiControllerBase(ICommandDispatcher commandDispatcher)
         {
@@ -26,8 +26,8 @@ namespace Blog.Api.Controllers
         {
             if (command is IAuthenticatedCommand authenticatedCommand)
                 authenticatedCommand.CurrentUserId = UserId;
-            if (command is ICacheableCommand cacheableCommand)
-                cacheableCommand.CacheKey = Guid.NewGuid().ToString();
+
+            command.Request = Infrastructure.Commands.Request.Create(Guid.NewGuid(), Request.Host.ToString(), Request.Path, Request.Method);
 
             await _commandDispatcher.DispatchAsync(command);
         }

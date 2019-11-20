@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands.Post
 {
-    public class DeletePost : ICommand
+    public class DeletePost : IResourceCommand
     {
-        public int Id { get; set; }
+        public Request Request { get; set; }
+        public Guid ResourceId { get; set; }
     }
 }

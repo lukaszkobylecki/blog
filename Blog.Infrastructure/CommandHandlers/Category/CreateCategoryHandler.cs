@@ -20,7 +20,7 @@ namespace Blog.Infrastructure.CommandHandlers.Category
 
         public async Task HandleAsync(CreateCategory command)
         {
-            await _categoryService.CreateAsync(command.Name.TrimOrEmpty(), command.CacheKey);
+            await _categoryService.CreateAsync(command.ResourceId, command.Name.TrimOrEmpty());
         }
     }
 }

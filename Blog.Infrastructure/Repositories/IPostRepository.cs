@@ -9,7 +9,7 @@ namespace Blog.Infrastructure.Repositories
     public interface IPostRepository : IRepository
     {
         Task<IEnumerable<Post>> BrowseAsync();
-        Task<Post> GetAsync(int id);
+        Task<Post> GetAsync(Guid id);
         Task CreateAsync(Post post);
         Task DeleteAsync(Post post);
     }

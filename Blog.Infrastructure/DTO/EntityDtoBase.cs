@@ -6,6 +6,6 @@ namespace Blog.Infrastructure.DTO
 {
     public abstract class EntityDtoBase
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

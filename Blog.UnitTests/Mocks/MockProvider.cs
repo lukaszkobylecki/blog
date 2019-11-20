@@ -13,8 +13,10 @@ namespace Blog.UnitTests.Mocks
     {
         private static readonly Random _random = new Random();
         private static readonly string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public static int RandomInt => _random.Next(100);
-        public static string RandomString => new string(Enumerable.Repeat(_chars, 10).Select(x => x[_random.Next(x.Length)]).ToArray());
+        public static int RandomInt 
+            => _random.Next(100);
+        public static string RandomString 
+            => new string(Enumerable.Repeat(_chars, 10).Select(x => x[_random.Next(x.Length)]).ToArray());
 
         public static IMapper AutoMapper(Action<Mock<IMapper>> setup = null)
         {

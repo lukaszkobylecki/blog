@@ -18,7 +18,7 @@ namespace Blog.Infrastructure.CommandHandlers.Category
 
         public async Task HandleAsync(DeleteCategory command)
         {
-            await _categoryService.DeleteAsync(command.Id);
+            await _categoryService.DeleteAsync(command.ResourceId);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Blog.Infrastructure.CommandHandlers.User
 
         public async Task HandleAsync(DeleteUser command)
         {
-            await _userService.DeleteAsync(command.Id);
+            await _userService.DeleteAsync(command.ResourceId);
         }
     }
 }

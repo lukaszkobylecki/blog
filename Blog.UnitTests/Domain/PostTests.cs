@@ -1,5 +1,7 @@
-﻿using Blog.Core.Domain;
+﻿using Blog.Common.Helpers;
+using Blog.Core.Domain;
 using Blog.Core.Exceptions;
+using Blog.UnitTests.Mocks;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -17,17 +19,16 @@ namespace Blog.UnitTests.Domain
         [SetUp]
         public void SetUp()
         {
-            var categoryMock = new Mock<Category>("category");
-            categoryMock.SetupGet(x => x.Id).Returns(1);
+            var categoryMock = new Mock<Category>(GuidHelper.GetGuidFromInt(1), "category");
 
-            _post = new Post("title", "content", categoryMock.Object);
+            _post = new Post(Guid.NewGuid(), "title", "content", categoryMock.Object);
         }
 
         [Test]
         public void Constructor_ShouldSetDates()
         {
             var now = DateTime.UtcNow;
-            var post = new Post("title", "content", new Mock<Category>().Object);
+            var post = new Post(Guid.NewGuid(), "title", "content", new Mock<Category>().Object);
 
             post.CreatedAt.Should().BeAfter(now);
             post.UpdatedAt.Should().BeAfter(now);

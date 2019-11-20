@@ -6,17 +6,17 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class Post : DateTrackingEntityBase
+    public class Post : TimestampableEntityBase
     {
         public string Title { get; private set; }
         public string Content { get; private set; }
-        public int CategoryId { get; private set; }
+        public Guid CategoryId { get; private set; }
         public Category Category { get; private set; }
 
-        protected Post() { }
+        protected Post() : base(Guid.NewGuid()) { }
 
-        public Post(string title, string content, Category category)
-            : base()
+        public Post(Guid id, string title, string content, Category category)
+            : base(id)
         {
             SetTitle(title);
             SetContent(content);

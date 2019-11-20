@@ -9,9 +9,9 @@ namespace Blog.Infrastructure.Services
     public interface IUserService : IService
     {
         Task<IEnumerable<UserDto>> BrowseAsync();
-        Task<UserDto> GetAsync(int id);
+        Task<UserDto> GetAsync(Guid id);
         Task<UserDto> GetAsync(string email);
-        Task CreateAsync(string email, string password, string username, string cacheKey);
-        Task DeleteAsync(int id);
+        Task CreateAsync(Guid id, string email, string password, string username);
+        Task DeleteAsync(Guid id);
     }
 }

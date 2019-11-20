@@ -23,7 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EventHandlers\Insert\" />
+    <Folder Include="EventHandlers\Create\" />
+    <Folder Include="EventHandlers\Update\" />
     <Folder Include="EventHandlers\Delete\" />
   </ItemGroup>
 

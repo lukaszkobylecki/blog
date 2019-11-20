@@ -15,14 +15,11 @@ namespace Blog.Api.Controllers
     public class UserController : ApiControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IMemoryCache _cache;
 
-        public UserController(ICommandDispatcher commandDispatcher, IUserService userService,
-            IMemoryCache cache)
+        public UserController(ICommandDispatcher commandDispatcher, IUserService userService)
             : base(commandDispatcher)
         {
             _userService = userService;
-            _cache = cache;
         }
 
         [HttpGet]
@@ -35,7 +32,7 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public async Task<IActionResult> GetUser(Guid id)
         {
             var user = await _userService.GetAsync(id);
             if (user == null)
@@ -47,19 +44,18 @@ namespace Blog.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser command)
         {
+            command.ResourceId = Guid.NewGuid();
             await DispatchAsync(command);
 
-            var user = _cache.Get<UserDto>(command.CacheKey);
-
-            return Created($"user/{user.Id}", user);
+            return Created($"user/{command.ResourceId}", null);
         }
 
         [Authorize]
         [Route("{id}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var command = new DeleteUser { Id = id };
+            var command = new DeleteUser { ResourceId = id };
             await DispatchAsync(command);
 
             return NoContent();

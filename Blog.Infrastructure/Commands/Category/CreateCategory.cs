@@ -4,8 +4,10 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands.Category
 {
-    public class CreateCategory : CacheableCommandBase
+    public class CreateCategory : IResourceCommand
     {
+        public Request Request { get; set; }
+        public Guid ResourceId { get; set; }
         public string Name { get; set; }
     }
 }

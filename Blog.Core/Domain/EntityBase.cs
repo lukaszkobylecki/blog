@@ -6,6 +6,7 @@ namespace Blog.Core.Domain
 {
     public abstract class EntityBase : IEntity
     {
-        public virtual int Id { get; protected set; }
+        public Guid Id { get; protected set; }
+        public int ClusterId { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace Blog.Infrastructure.Repositories
         public async Task<IEnumerable<User>> BrowseAsync()
             => await _dbContext.Users.ToListAsync();
 
-        public async Task<User> GetAsync(int id)
+        public async Task<User> GetAsync(Guid id)
             => await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id);
 
         public async Task<User> GetAsync(string email)

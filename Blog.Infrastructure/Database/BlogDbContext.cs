@@ -5,6 +5,7 @@ using Blog.Infrastructure.Settings;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace Blog.Infrastructure.Database
 {
@@ -35,6 +36,11 @@ namespace Blog.Infrastructure.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var assembly = typeof(BlogDbContext)
+                .GetTypeInfo()
+                .Assembly;
+
+            modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
     }
 }

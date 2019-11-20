@@ -14,14 +14,11 @@ namespace Blog.Api.Controllers
     public class PostController : ApiControllerBase
     {
         private readonly IPostService _postService;
-        private readonly IMemoryCache _cache;
 
-        public PostController(ICommandDispatcher commandDispatcher, IPostService postService,
-            IMemoryCache cache) 
+        public PostController(ICommandDispatcher commandDispatcher, IPostService postService) 
             : base(commandDispatcher)
         {
             _postService = postService;
-            _cache = cache;
         }
 
         [HttpGet]
@@ -34,7 +31,7 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetPost(int id)
+        public async Task<IActionResult> GetPost(Guid id)
         {
             var post = await _postService.GetAsync(id);
             if (post == null)
@@ -46,18 +43,17 @@ namespace Blog.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatePost command)
         {
+            command.ResourceId = Guid.NewGuid();
             await DispatchAsync(command);
 
-            var post = _cache.Get<PostDto>(command.CacheKey);
-
-            return Created($"post/{post.Id}", post);
+            return Created($"post/{command.ResourceId}", null);
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeletePost(int id)
+        public async Task<IActionResult> DeletePost(Guid id)
         {
-            var command = new DeletePost { Id = id };
+            var command = new DeletePost { ResourceId = id };
             await DispatchAsync(command);
 
             return NoContent();

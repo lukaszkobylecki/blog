@@ -1,4 +1,5 @@
-﻿using Blog.Core.Domain;
+﻿using Blog.Common.Helpers;
+using Blog.Core.Domain;
 using Blog.Infrastructure.EventHandlers;
 using Blog.Infrastructure.Events;
 using Blog.Infrastructure.Exceptions;
@@ -21,20 +22,16 @@ namespace Blog.UnitTests.Services
         private Mock<Category> _existingCategory;
         private ICategoryService _categoryService;
         private Mock<ICategoryRepository> _categoryRepository;
-        private Mock<IEventPublisher> _eventPublisher;
 
         [SetUp]
         public void SetUp()
         {
-            _existingCategory = new Mock<Category>("category");
-            _existingCategory.SetupGet(x => x.Id).Returns(1);
+            _existingCategory = new Mock<Category>(GuidHelper.GetGuidFromInt(1), "category");
 
             _categoryRepository = new Mock<ICategoryRepository>();
-            _categoryRepository.Setup(x => x.GetAsync(1)).ReturnsAsync(_existingCategory.Object);
+            _categoryRepository.Setup(x => x.GetAsync(_existingCategory.Object.Id)).ReturnsAsync(_existingCategory.Object);
 
-            _eventPublisher = new Mock<IEventPublisher>();
-
-            _categoryService = new CategoryService(_categoryRepository.Object, MockProvider.AutoMapper(), _eventPublisher.Object);
+            _categoryService = new CategoryService(_categoryRepository.Object, MockProvider.AutoMapper());
         }
 
         [Test]
@@ -48,7 +45,7 @@ namespace Blog.UnitTests.Services
         [Test]
         public async Task GetAsync_ShouldInvokeCategoryRepositoryGetAsync()
         {
-            var id = MockProvider.RandomInt;
+            var id = GuidHelper.GetGuidFromInt(MockProvider.RandomInt);
 
             await _categoryService.GetAsync(id);
 
@@ -58,12 +55,11 @@ namespace Blog.UnitTests.Services
         [Test]
         public void CreateAsync_ShouldSuccess()
         {
-            _categoryService.Invoking(async x => await x.CreateAsync(MockProvider.RandomString, MockProvider.RandomString))
+            _categoryService.Invoking(async x => await x.CreateAsync(Guid.NewGuid(), MockProvider.RandomString))
                 .Should()
                 .NotThrow();
 
             _categoryRepository.Verify(x => x.CreateAsync(It.IsAny<Category>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<Category>>()), Times.Once);
         }
 
         [Test]
@@ -74,13 +70,12 @@ namespace Blog.UnitTests.Services
                 .NotThrow();
 
             _categoryRepository.Verify(x => x.DeleteAsync(It.IsAny<Category>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityDeletedEvent<Category>>()), Times.Once);
         }
 
         [Test]
         public void DeleteAsync_NotExistingCategory_ShouldThrowError()
         {
-            _categoryService.Invoking(async x => await x.DeleteAsync(-1))
+            _categoryService.Invoking(async x => await x.DeleteAsync(GuidHelper.GetGuidFromInt(100)))
                 .Should()
                 .Throw<ServiceException>()
                 .And.Code.Should().Be(ErrorCodes.CategoryNotFound);

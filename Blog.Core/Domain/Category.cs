@@ -6,14 +6,14 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class Category : DateTrackingEntityBase
+    public class Category : TimestampableEntityBase
     {
         public string Name { get; private set; }
 
-        protected Category() { }
+        protected Category() : base(Guid.NewGuid()) { }
 
-        public Category(string name) 
-            : base()
+        public Category(Guid id, string name) 
+            : base(id)
         {
             SetName(name);
         }

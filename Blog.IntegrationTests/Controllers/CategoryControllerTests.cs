@@ -1,4 +1,5 @@
-﻿using Blog.Infrastructure.Commands.Category;
+﻿using Blog.Common.Helpers;
+using Blog.Infrastructure.Commands.Category;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using NUnit.Framework;
@@ -30,7 +31,9 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetCategory_NotExisting_ShouldReturnNotFound()
         {
-            var result = await GetResource<CategoryDto>($"{BaseUrl}/123");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -38,7 +41,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetCategory_Existing_ShouldReturnCategory()
         {
-            var id = 1;
+            var id = GuidHelper.GetGuidFromInt(1);
 
             var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
 
@@ -49,7 +52,6 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task CreateCategory_ValidData_ShouldSuccess()
         {
-            var id = 11;
             var now = DateTime.UtcNow;
             var command = new CreateCategory
             {
@@ -60,12 +62,12 @@ namespace Blog.IntegrationTests.Controllers
             var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.ToString().Should().Be($"{BaseUrl}/{id}");
+            response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
+            var result = await GetResource<CategoryDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Data.Id.Should().Be(id);
+            result.Data.Id.Should().NotBe(Guid.Empty);
             result.Data.Name.Should().Be(command.Name.Trim());
             result.Data.UpdatedAt.Should().BeAfter(now);
             result.Data.CreatedAt.Should().BeAfter(now);
@@ -91,7 +93,9 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeleteCategory_NotExisting_ShouldReturnBadRequest()
         {
-            var response = await Client.DeleteAsync($"{BaseUrl}/123");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -99,7 +103,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeleteCategory_Existing_ShouldSuccess()
         {
-            var id = 10;
+            var id = GuidHelper.GetGuidFromInt(10);
 
             var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
 

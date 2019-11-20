@@ -15,15 +15,13 @@ namespace Blog.Infrastructure.Services
     {
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
-        private readonly IEventPublisher _eventPublisher;
         private readonly ICategoryRepository _categoryRepository;
 
         public PostService(IPostRepository postRepository, IMapper mapper,
-            IEventPublisher eventPublisher, ICategoryRepository categoryRepository)
+            ICategoryRepository categoryRepository)
         {
             _postRepository = postRepository;
             _mapper = mapper;
-            _eventPublisher = eventPublisher;
             _categoryRepository = categoryRepository;
         }
 
@@ -34,30 +32,25 @@ namespace Blog.Infrastructure.Services
             return _mapper.Map<IEnumerable<PostDto>>(posts);
         }
 
-        public async Task<PostDto> GetAsync(int id)
+        public async Task<PostDto> GetAsync(Guid id)
         {
             var post = await _postRepository.GetAsync(id);
 
             return _mapper.Map<PostDto>(post);
         }
 
-        public async Task CreateAsync(string title, string content, int categoryId, string cacheKey)
+        public async Task CreateAsync(Guid id, string title, string content, Guid categoryId)
         {
             var category = await _categoryRepository.GetOrFailAsync(categoryId);
 
-            var post = new Post(title, content, category);
+            var post = new Post(id, title, content, category);
             await _postRepository.CreateAsync(post);
-
-            var dto = _mapper.Map<PostDto>(post);
-            await _eventPublisher.EntityCreated(post, dto, cacheKey);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var post = await _postRepository.GetOrFailAsync(id);
-
             await _postRepository.DeleteAsync(post);
-            await _eventPublisher.EntityDeleted(post);
         }
     }
 }

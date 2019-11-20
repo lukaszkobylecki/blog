@@ -1,4 +1,5 @@
-﻿using Blog.Infrastructure.Commands.Post;
+﻿using Blog.Common.Helpers;
+using Blog.Infrastructure.Commands.Post;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using NUnit.Framework;
@@ -29,7 +30,9 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetPost_NotExisting_ShouldReturnNotFound()
         {
-            var result = await GetResource<PostDto>($"{BaseUrl}/123");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -37,7 +40,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetPost_Existing_ShouldReturnNotFound()
         {
-            var id = 1;
+            var id = GuidHelper.GetGuidFromInt(1);
 
             var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
 
@@ -48,25 +51,24 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task CreatePost_ValidData_ShouldSuccess()
         {
-            var id = 11;
             var now = DateTime.UtcNow;
             var command = new CreatePost
             {
                 Title = "    title    ",
                 Content = "  content   ",
-                CategoryId = 1
+                CategoryId = GuidHelper.GetGuidFromInt(1)
             };
             var payload = GetPayload(command);
 
             var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.ToString().Should().Be($"{BaseUrl}/{id}");
+            response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
+            var result = await GetResource<PostDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Data.Id.Should().Be(id);
+            result.Data.Id.Should().NotBe(Guid.Empty);
             result.Data.Title.Should().Be(command.Title.Trim());
             result.Data.Content.Should().Be(command.Content.Trim());
             result.Data.CategoryId.Should().Be(command.CategoryId);
@@ -88,7 +90,7 @@ namespace Blog.IntegrationTests.Controllers
             {
                 Title = title,
                 Content = content,
-                CategoryId = categoryId
+                CategoryId = GuidHelper.GetGuidFromInt(categoryId)
             };
             var payload = GetPayload(command);
 
@@ -100,7 +102,9 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeletePost_NotExisting_ShouldReturnBadRequest()
         {
-            var response = await Client.DeleteAsync($"{BaseUrl}/123");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
@@ -108,7 +112,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeletePost_Existing_ShouldSuccess()
         {
-            var id = 10;
+            var id = GuidHelper.GetGuidFromInt(10);
 
             var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
 

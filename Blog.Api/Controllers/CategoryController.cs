@@ -15,14 +15,11 @@ namespace Blog.Api.Controllers
     public class CategoryController : ApiControllerBase
     {
         private readonly ICategoryService _categoryService;
-        private readonly IMemoryCache _cache;
 
-        public CategoryController(ICommandDispatcher commandDispatcher, ICategoryService categoryService,
-            IMemoryCache cache) 
+        public CategoryController(ICommandDispatcher commandDispatcher, ICategoryService categoryService) 
             : base(commandDispatcher)
         {
             _categoryService = categoryService;
-            _cache = cache;
         }
 
         [HttpGet]
@@ -35,7 +32,7 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetCategory([FromRoute] int id)
+        public async Task<IActionResult> GetCategory([FromRoute] Guid id)
         {
             var category = await _categoryService.GetAsync(id);
             if (category == null)
@@ -47,18 +44,17 @@ namespace Blog.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategory command)
         {
+            command.ResourceId = Guid.NewGuid();
             await DispatchAsync(command);
 
-            var category = _cache.Get<CategoryDto>(command.CacheKey);
-
-            return Created($"category/{category.Id}", category);
+            return Created($"category/{command.ResourceId}", null);
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            var command = new DeleteCategory { Id = id };
+            var command = new DeleteCategory { ResourceId = id };
             await DispatchAsync(command);
 
             return NoContent();

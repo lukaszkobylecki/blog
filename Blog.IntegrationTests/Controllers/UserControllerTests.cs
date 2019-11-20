@@ -1,4 +1,5 @@
-﻿using Blog.Infrastructure.Commands.User;
+﻿using Blog.Common.Helpers;
+using Blog.Infrastructure.Commands.User;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using Newtonsoft.Json;
@@ -31,7 +32,9 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetUser_NotExisting_ShouldReturnNotFound()
         {
-            var result = await GetResource<UserDto>($"{BaseUrl}/123");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
         }
@@ -39,7 +42,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetUser_Existing_ShouldReturnUser()
         {
-            var id = 1;
+            var id = GuidHelper.GetGuidFromInt(1);
 
             var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
 
@@ -50,7 +53,6 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task CreateUser_NotExisting_ShouldSuccess()
         {
-            var id = 11;
             var now = DateTime.UtcNow;
             var command = new CreateUser
             {
@@ -63,12 +65,12 @@ namespace Blog.IntegrationTests.Controllers
             var response = await Client.PostAsync(BaseUrl, payload);
 
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);
-            response.Headers.Location.ToString().Should().Be($"{BaseUrl}/{id}");
+            response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
+            var result = await GetResource<UserDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
-            result.Data.Id.Should().Be(11);
+            result.Data.Id.Should().NotBe(Guid.Empty);
             result.Data.Email.Should().Be(command.Email.Trim());
             result.Data.Username.Should().Be(command.Username.Trim());
             result.Data.CreatedAt.Should().BeAfter(now);
@@ -104,15 +106,20 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeleteUser_Unauthorized_ShouldReturnUnauthorized()
         {
-            var response = await Client.DeleteAsync($"{BaseUrl}/100");
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
+            
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
 
         [Test]
         public async Task DeleteUser_NotExisting_ShouldReturnBadRequest()
         {
+            var id = GuidHelper.GetGuidFromInt(123);
+
             await AddAuthTokenAsync("user1@email.com", "password");
-            var response = await Client.DeleteAsync($"{BaseUrl}/100");
+            var response = await Client.DeleteAsync($"{BaseUrl}/{id}");
             RemoveAuthToken();
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -121,7 +128,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task DeleteUser_Existing_ShouldSuccess()
         {
-            var id = 10;
+            var id = GuidHelper.GetGuidFromInt(10);
 
             await AddAuthTokenAsync("user1@email.com", "password");
             var response = await Client.DeleteAsync($"{BaseUrl}/{id}");

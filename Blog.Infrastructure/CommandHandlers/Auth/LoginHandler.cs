@@ -32,7 +32,8 @@ namespace Blog.Infrastructure.CommandHandlers.Auth
 
             var user = await _userService.GetAsync(command.Email.TrimToLower());
             var token = _jwtHandler.CreateToken(user.Id);
-            _cache.SetShort(command.CacheKey, token);
+            _cache.SetShort(command.Request.Id.ToString(), token);
+
         }
     }
 }

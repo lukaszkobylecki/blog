@@ -17,15 +17,13 @@ namespace Blog.Infrastructure.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IEncrypter _encrypter;
-        private readonly IEventPublisher _eventPublisher;
 
         public UserService(IUserRepository userRepository, IMapper mapper,
-            IEncrypter encrypter, IEventPublisher eventPublisher)
+            IEncrypter encrypter)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _encrypter = encrypter;
-            _eventPublisher = eventPublisher;
         }
 
         public async Task<IEnumerable<UserDto>> BrowseAsync()
@@ -35,7 +33,7 @@ namespace Blog.Infrastructure.Services
             return _mapper.Map<IEnumerable<UserDto>>(users);
         }
 
-        public async Task<UserDto> GetAsync(int id)
+        public async Task<UserDto> GetAsync(Guid id)
         {
             var user = await _userRepository.GetAsync(id);
 
@@ -47,10 +45,9 @@ namespace Blog.Infrastructure.Services
             var user = await _userRepository.GetAsync(email);
 
             return _mapper.Map<UserDto>(user);
-
         }
 
-        public async Task CreateAsync(string email, string password, string username, string cacheKey)
+        public async Task CreateAsync(Guid id, string email, string password, string username)
         {
             var user = await _userRepository.GetAsync(email);
             if (user != null)
@@ -59,19 +56,14 @@ namespace Blog.Infrastructure.Services
             var salt = _encrypter.GetSalt(password);
             var hash = _encrypter.GetHash(password, salt);
 
-            user = new User(email, hash, salt, username);
+            user = new User(id, email, hash, salt, username);
             await _userRepository.CreateAsync(user);
-
-            var dto = _mapper.Map<UserDto>(user);
-            await _eventPublisher.EntityCreated(user, dto, cacheKey);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var user = await _userRepository.GetOrFailAsync(id);
-            
             await _userRepository.DeleteAsync(user);
-            await _eventPublisher.EntityDeleted(user);
         }
     }
 }

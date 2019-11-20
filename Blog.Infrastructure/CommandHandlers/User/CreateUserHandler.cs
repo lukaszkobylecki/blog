@@ -19,7 +19,8 @@ namespace Blog.Infrastructure.CommandHandlers.User
 
         public async Task HandleAsync(CreateUser command)
         {
-            await _userService.CreateAsync(command.Email.TrimToLower(), command.Password.TrimOrEmpty(), command.Username.TrimOrEmpty(), command.CacheKey);
+            await _userService.CreateAsync(command.ResourceId, command.Email.TrimToLower(), 
+                command.Password.TrimOrEmpty(), command.Username.TrimOrEmpty());
         }
     }
 }

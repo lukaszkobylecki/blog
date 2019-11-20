@@ -24,8 +24,8 @@ namespace Blog.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            _existingUser = new User("user1test.com", "password", "salt", "username");
-            _newUser = new User("user2test.com", "password2", "salt2", "username2");
+            _existingUser = new User(Guid.NewGuid(), "user1test.com", "password", "salt", "username");
+            _newUser = new User(Guid.NewGuid(), "user2test.com", "password2", "salt2", "username2");
 
             var userRepositoryMock = new Mock<IUserRepository>();
             userRepositoryMock.Setup(x => x.GetAsync(_existingUser.Email)).ReturnsAsync(_existingUser);

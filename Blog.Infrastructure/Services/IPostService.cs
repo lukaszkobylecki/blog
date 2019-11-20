@@ -9,8 +9,8 @@ namespace Blog.Infrastructure.Services
     public interface IPostService : IService
     {
         Task<IEnumerable<PostDto>> BrowseAsync();
-        Task<PostDto> GetAsync(int id);
-        Task CreateAsync(string title, string content, int categoryId, string cacheKey);
-        Task DeleteAsync(int id);
+        Task<PostDto> GetAsync(Guid id);
+        Task CreateAsync(Guid id, string title, string content, Guid categoryId);
+        Task DeleteAsync(Guid id);
     }
 }

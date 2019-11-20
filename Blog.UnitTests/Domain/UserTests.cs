@@ -17,27 +17,18 @@ namespace Blog.UnitTests.Domain
         [SetUp]
         public void SetUp()
         {
-            _user = new User("email1@test.com", "password", "salt", "username");
+            _user = new User(Guid.NewGuid(), "email1@test.com", "password", "salt", "username");
         }
         
         [Test]
-        public void Constructor_ShouldSetCreatedAt()
+        public void Constructor_ShouldSetDates()
         {
             var now = DateTime.UtcNow;
-            var user = new User("emai1@test.com", "password", "salt", "username");
+            var user = new User(Guid.NewGuid(), "emai1@test.com", "password", "salt", "username");
 
             user.CreatedAt.Should().BeAfter(now);
-        }
-
-        [Test]
-        public void Constructor_ShouldSetUpdatedAt()
-        {
-            var now = DateTime.UtcNow;
-            var user = new User("emai1@test.com", "password", "salt", "username");
-
             user.UpdatedAt.Should().BeAfter(now);
         }
-
 
         [Test]
         [TestCase("")]

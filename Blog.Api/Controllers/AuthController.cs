@@ -26,7 +26,7 @@ namespace Blog.Api.Controllers
         {
             await DispatchAsync(command);
             
-            var token = _cache.Get<JwtDto>(command.CacheKey);
+            var token = _cache.Get<JwtDto>(command.Request.Id.ToString());
 
             return Ok(token);
         }

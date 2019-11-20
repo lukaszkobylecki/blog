@@ -6,5 +6,6 @@ namespace Blog.Infrastructure.Commands
 {
     public interface ICommand
     {
+        public Request Request { get; set; }
     }
 }

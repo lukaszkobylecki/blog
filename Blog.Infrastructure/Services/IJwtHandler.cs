@@ -7,6 +7,6 @@ namespace Blog.Infrastructure.Services
 {
     public interface IJwtHandler
     {
-        JwtDto CreateToken(int userId);
+        JwtDto CreateToken(Guid userId);
     }
 }

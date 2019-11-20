@@ -19,7 +19,7 @@ namespace Blog.Infrastructure.Services
             _settings = settings;
         }
 
-        public JwtDto CreateToken(int userId)
+        public JwtDto CreateToken(Guid userId)
         {
             DateTime now = DateTime.UtcNow;
 

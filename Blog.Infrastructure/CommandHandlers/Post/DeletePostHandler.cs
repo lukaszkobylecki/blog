@@ -18,7 +18,7 @@ namespace Blog.Infrastructure.CommandHandlers.Post
 
         public async Task HandleAsync(DeletePost command)
         {
-            await _postService.DeleteAsync(command.Id);
+            await _postService.DeleteAsync(command.ResourceId);
         }
     }
 }

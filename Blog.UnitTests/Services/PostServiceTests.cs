@@ -1,4 +1,5 @@
-﻿using Blog.Core.Domain;
+﻿using Blog.Common.Helpers;
+using Blog.Core.Domain;
 using Blog.Infrastructure.EventHandlers;
 using Blog.Infrastructure.Events;
 using Blog.Infrastructure.Exceptions;
@@ -20,26 +21,21 @@ namespace Blog.UnitTests.Services
         private Mock<Post> _existingPost;
         private IPostService _postService;
         private Mock<IPostRepository> _postRepository;
-        private Mock<IEventPublisher> _eventPublisher;
 
         [SetUp]
         public void SetUp()
         {
-            var categoryMock = new Mock<Category>("name");
-            categoryMock.SetupGet(x => x.Id).Returns(1);
+            var categoryMock = new Mock<Category>(GuidHelper.GetGuidFromInt(1), "name");
 
-            _existingPost = new Mock<Post>("title", "content", categoryMock.Object);
-            _existingPost.SetupGet(x => x.Id).Returns(1);
+            _existingPost = new Mock<Post>(GuidHelper.GetGuidFromInt(1), "title", "content", categoryMock.Object);
 
             _postRepository = new Mock<IPostRepository>();
-            _postRepository.Setup(x => x.GetAsync(1)).ReturnsAsync(_existingPost.Object);
+            _postRepository.Setup(x => x.GetAsync(_existingPost.Object.Id)).ReturnsAsync(_existingPost.Object);
 
             var categoryRepository = new Mock<ICategoryRepository>();
-            categoryRepository.Setup(x => x.GetAsync(1)).ReturnsAsync(categoryMock.Object);
+            categoryRepository.Setup(x => x.GetAsync(categoryMock.Object.Id)).ReturnsAsync(categoryMock.Object);
 
-            _eventPublisher = new Mock<IEventPublisher>();
-
-            _postService = new PostService(_postRepository.Object, MockProvider.AutoMapper(), _eventPublisher.Object, categoryRepository.Object);
+            _postService = new PostService(_postRepository.Object, MockProvider.AutoMapper(), categoryRepository.Object);
         }
 
         [Test]
@@ -53,7 +49,7 @@ namespace Blog.UnitTests.Services
         [Test]
         public async Task GetAsync_ShouldInvokePostRepositoryGetAsync()
         {
-            var id = MockProvider.RandomInt;
+            var id = GuidHelper.GetGuidFromInt(MockProvider.RandomInt);
 
             await _postService.GetAsync(id);
 
@@ -63,23 +59,22 @@ namespace Blog.UnitTests.Services
         [Test]
         public void CreateAsync_ValidData_ShouldSuccess()
         {
-            _postService.Invoking(async x => await x.CreateAsync(MockProvider.RandomString, MockProvider.RandomString, 1, MockProvider.RandomString))
+            _postService.Invoking(async x => await x.CreateAsync(Guid.NewGuid(), MockProvider.RandomString, MockProvider.RandomString, GuidHelper.GetGuidFromInt(1)))
                 .Should()
                 .NotThrow();
 
             _postRepository.Verify(x => x.CreateAsync(It.IsAny<Post>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<Post>>()), Times.Once);
         }
 
         [Test]
         public void CreateAsync_NotExistingCategory_ShouldThrowError()
         {
-            _postService.Invoking(async x => await x.CreateAsync(MockProvider.RandomString, MockProvider.RandomString, 100, MockProvider.RandomString))
+            _postService.Invoking(async x => await x.CreateAsync(Guid.NewGuid(), MockProvider.RandomString, MockProvider.RandomString, GuidHelper.GetGuidFromInt(100)))
                 .Should()
-                .NotThrow();
+                .Throw<ServiceException>()
+                .And.Code.Should().Be(ErrorCodes.CategoryNotFound);
 
             _postRepository.Verify(x => x.CreateAsync(It.IsAny<Post>()), Times.Never);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityCreatedEvent<Post>>()), Times.Never);
         }
 
         [Test]
@@ -90,19 +85,17 @@ namespace Blog.UnitTests.Services
                 .NotThrow();
 
             _postRepository.Verify(x => x.DeleteAsync(It.IsAny<Post>()), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityDeletedEvent<Post>>()), Times.Once);
         }
 
         [Test]
         public void DeleteAsync_NotExistingPost_ShouldThrowError()
         {
-            _postService.Invoking(async x => await x.DeleteAsync(-1))
+            _postService.Invoking(async x => await x.DeleteAsync(GuidHelper.GetGuidFromInt(100)))
                 .Should()
                 .Throw<ServiceException>()
                 .And.Code.Should().Be(ErrorCodes.PostNotFound);
 
             _postRepository.Verify(x => x.DeleteAsync(It.IsAny<Post>()), Times.Never);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<EntityDeletedEvent<Post>>()), Times.Never);
         }
     }
 }

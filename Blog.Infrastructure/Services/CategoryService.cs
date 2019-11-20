@@ -16,14 +16,11 @@ namespace Blog.Infrastructure.Services
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
-        private readonly IEventPublisher _eventPublisher;
 
-        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper,
-            IEventPublisher eventPublisher)
+        public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
-            _eventPublisher = eventPublisher;
         }
 
         public async Task<IEnumerable<CategoryDto>> BrowseAsync()
@@ -33,27 +30,22 @@ namespace Blog.Infrastructure.Services
             return _mapper.Map<IEnumerable<CategoryDto>>(categories);
         }
 
-        public async Task<CategoryDto> GetAsync(int id)
+        public async Task<CategoryDto> GetAsync(Guid id)
         {
             var category = await _categoryRepository.GetAsync(id);
 
             return _mapper.Map<CategoryDto>(category);
         }
-        public async Task CreateAsync(string name, string cacheKey)
+        public async Task CreateAsync(Guid id, string name)
         {
-            var category = new Category(name);
+            var category = new Category(id, name);
             await _categoryRepository.CreateAsync(category);
-
-            var dto = _mapper.Map<CategoryDto>(category);
-            await _eventPublisher.EntityCreated(category, dto, cacheKey);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var category = await _categoryRepository.GetOrFailAsync(id);
-
             await _categoryRepository.DeleteAsync(category);
-            await _eventPublisher.EntityDeleted(category);
         }
     }
 }

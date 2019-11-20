@@ -10,8 +10,8 @@ namespace Blog.Infrastructure.Services
     public interface ICategoryService : IService
     {
         Task<IEnumerable<CategoryDto>> BrowseAsync();
-        Task<CategoryDto> GetAsync(int id);
-        Task CreateAsync(string name, string cacheKey);
-        Task DeleteAsync(int id);
+        Task<CategoryDto> GetAsync(Guid id);
+        Task CreateAsync(Guid id, string name);
+        Task DeleteAsync(Guid id);
     }
 }

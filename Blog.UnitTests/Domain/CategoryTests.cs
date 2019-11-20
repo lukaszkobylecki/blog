@@ -16,14 +16,14 @@ namespace Blog.UnitTests.Domain
         [SetUp]
         public void SetUp()
         {
-            _category = new Category("category");
+            _category = new Category(Guid.NewGuid(), "category");
         }
 
         [Test]
         public void Constructor_ShouldSetDates()
         {
             var now = DateTime.UtcNow;
-            var category = new Category("category");
+            var category = new Category(Guid.NewGuid(), "category");
 
             category.CreatedAt.Should().BeAfter(now);
             category.UpdatedAt.Should().BeAfter(now);

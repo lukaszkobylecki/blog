@@ -4,8 +4,9 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands.Category
 {
-    public class DeleteCategory : ICommand
+    public class DeleteCategory : IResourceCommand
     {
-        public int Id { get; set; }
+        public Request Request { get; set; }
+        public Guid ResourceId { get; set; }
     }
 }

@@ -6,18 +6,18 @@ using System.Text;
 
 namespace Blog.Core.Domain
 {
-    public class User : DateTrackingEntityBase
+    public class User : TimestampableEntityBase
     {
         public string Email { get; private set; }
         public string Password { get; private set; }
         public string Salt { get; private set; }
         public string Username { get; private set; }
 
-        protected User() { }
+        protected User() : base(Guid.NewGuid()) { }
 
-        public User(string email, string password,
+        public User(Guid id, string email, string password,
             string salt, string username)
-            : base()
+            : base(id)
         {
             SetEmail(email);
             SetPassword(password, salt);

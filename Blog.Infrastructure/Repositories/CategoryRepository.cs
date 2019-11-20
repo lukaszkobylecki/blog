@@ -21,7 +21,7 @@ namespace Blog.Infrastructure.Repositories
         public async Task<IEnumerable<Category>> BrowseAsync()
             => await _dbContext.Categories.ToListAsync();
 
-        public async Task<Category> GetAsync(int id)
+        public async Task<Category> GetAsync(Guid id)
             => await _dbContext.Categories.SingleOrDefaultAsync(x => x.Id == id);
 
         public async Task CreateAsync(Category category)

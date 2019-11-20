@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Blog.Infrastructure.Commands
 {
-    public interface ICacheableCommand : ICommand
+    public interface IResourceCommand : ICommand
     {
-        public string CacheKey { get; set; }
+        public Guid ResourceId { get; set; }
     }
 }

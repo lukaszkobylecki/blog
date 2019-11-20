@@ -6,6 +6,7 @@ namespace Blog.Core.Domain
 {
     public interface IEntity
     {
-        int Id { get; }
+        Guid Id { get; }
+        int ClusterId { get; }
     }
 }
