@@ -22,10 +22,4 @@
     <ProjectReference Include="..\Blog.Core\Blog.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EventHandlers\Create\" />
-    <Folder Include="EventHandlers\Update\" />
-    <Folder Include="EventHandlers\Delete\" />
-  </ItemGroup>
-
 </Project>

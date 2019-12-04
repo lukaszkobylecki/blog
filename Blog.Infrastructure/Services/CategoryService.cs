@@ -36,6 +36,14 @@ namespace Blog.Infrastructure.Services
 
             return _mapper.Map<CategoryDto>(category);
         }
+
+        public async Task<CategoryDto> GetOrFailAsync(Guid id)
+        {
+            var category = await _categoryRepository.GetOrFailAsync(id);
+
+            return _mapper.Map<CategoryDto>(category);
+        }
+
         public async Task CreateAsync(Guid id, string name)
         {
             var category = new Category(id, name);

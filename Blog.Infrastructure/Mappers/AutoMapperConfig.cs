@@ -15,6 +15,7 @@ namespace Blog.Infrastructure.Mappers
                 cfg.CreateMap<User, UserDto>();
                 cfg.CreateMap<Category, CategoryDto>();
                 cfg.CreateMap<Post, PostDto>();
+                cfg.CreateMap<EventEntry, EventEntryDto>();
             })
             .CreateMapper();
     }

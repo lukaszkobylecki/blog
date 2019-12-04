@@ -11,7 +11,10 @@ namespace Blog.Infrastructure.Services
         Task<IEnumerable<UserDto>> BrowseAsync();
         Task<UserDto> GetAsync(Guid id);
         Task<UserDto> GetAsync(string email);
+        Task<UserDto> GetOrFailAsync(Guid id);
+        Task<UserDto> GetOrFailAsync(string email);
         Task CreateAsync(Guid id, string email, string password, string username);
         Task DeleteAsync(Guid id);
+
     }
 }

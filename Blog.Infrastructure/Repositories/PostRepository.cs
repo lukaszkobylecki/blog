@@ -30,7 +30,7 @@ namespace Blog.Infrastructure.Repositories
 
         public async Task CreateAsync(Post post)
         {
-            await _dbContext.AddAsync(post);
+            await _dbContext.Posts.AddAsync(post);
             await _dbContext.SaveChangesAsync();
         }
 

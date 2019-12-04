@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Blog.Infrastructure.EventHandlers;
 using Blog.Infrastructure.Events;
 using System;
 using System.Collections.Generic;

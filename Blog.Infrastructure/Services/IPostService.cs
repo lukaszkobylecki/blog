@@ -10,6 +10,7 @@ namespace Blog.Infrastructure.Services
     {
         Task<IEnumerable<PostDto>> BrowseAsync();
         Task<PostDto> GetAsync(Guid id);
+        Task<PostDto> GetOrFailAsync(Guid id);
         Task CreateAsync(Guid id, string title, string content, Guid categoryId);
         Task DeleteAsync(Guid id);
     }

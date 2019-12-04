@@ -26,12 +26,12 @@ namespace Blog.Infrastructure.Repositories
 
         public async Task CreateAsync(Category category)
         {
-            await _dbContext.AddAsync(category);
+            await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
         }
         public async Task DeleteAsync(Category category)
         {
-            _dbContext.Remove(category);
+            _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
         }
     }

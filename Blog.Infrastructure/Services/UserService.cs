@@ -47,6 +47,20 @@ namespace Blog.Infrastructure.Services
             return _mapper.Map<UserDto>(user);
         }
 
+        public async Task<UserDto> GetOrFailAsync(Guid id)
+        {
+            var user = await _userRepository.GetOrFailAsync(id);
+
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<UserDto> GetOrFailAsync(string email)
+        {
+            var user = await _userRepository.GetOrFailAsync(email);
+
+            return _mapper.Map<UserDto>(user);
+        }
+
         public async Task CreateAsync(Guid id, string email, string password, string username)
         {
             var user = await _userRepository.GetAsync(email);

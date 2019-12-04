@@ -11,6 +11,7 @@ namespace Blog.Infrastructure.Services
     {
         Task<IEnumerable<CategoryDto>> BrowseAsync();
         Task<CategoryDto> GetAsync(Guid id);
+        Task<CategoryDto> GetOrFailAsync(Guid id);
         Task CreateAsync(Guid id, string name);
         Task DeleteAsync(Guid id);
     }

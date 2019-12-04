@@ -19,6 +19,15 @@ namespace Blog.Infrastructure.Extensions
             return user;
         }
 
+        public static async Task<User> GetOrFailAsync(this IUserRepository userRepository, string email)
+        {
+            var user = await userRepository.GetAsync(email);
+            if (user == null)
+                throw new ServiceException(ErrorCodes.UserNotFound, $"User with email: '{email}' was not found.");
+
+            return user;
+        }
+
         public static async Task<Category> GetOrFailAsync(this ICategoryRepository categoryRepository, Guid id)
         {
             var category = await categoryRepository.GetAsync(id);
