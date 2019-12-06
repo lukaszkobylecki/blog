@@ -12,6 +12,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Blog.Api;
+using FluentAssertions;
+using System.Net;
 
 namespace Blog.IntegrationTests.Controllers
 {
@@ -49,7 +51,7 @@ namespace Blog.IntegrationTests.Controllers
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
 
-        protected async Task<GetResult<T>> GetResource<T>(string path)
+        protected async Task<GetResult<T>> GetResourceAsync<T>(string path)
         {
             var response = await Client.GetAsync(path);
             var responseString = await response.Content.ReadAsStringAsync();
@@ -74,6 +76,8 @@ namespace Blog.IntegrationTests.Controllers
             var payload = GetPayload(command);
 
             var response = await Client.PostAsync("auth", payload);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
             var jwt = await DeserializeAsync<JwtDto>(response);
 
             Client.DefaultRequestHeaders.Add("Authorization", $"bearer {jwt.Token}");

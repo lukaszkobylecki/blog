@@ -63,6 +63,27 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
+        public void UpdateAsync_ExistingCategory_ShouldSucces()
+        {
+            _categoryService.Invoking(async x => await x.UpdateAsync(_existingCategory.Object.Id, "new-name"))
+                .Should()
+                .NotThrow();
+
+            _categoryRepository.Verify(x => x.UpdateAsync(It.IsAny<Category>()), Times.Once);
+        }
+
+        [Test]
+        public void UpdateAsync_NotExistingCategory_ShouldSucces()
+        {
+            _categoryService.Invoking(async x => await x.UpdateAsync(GuidHelper.GetGuidFromInt(100), "new-name"))
+                .Should()
+                .Throw<ServiceException>()
+                .Which.Code.Should().Be(ErrorCodes.CategoryNotFound);
+
+            _categoryRepository.Verify(x => x.UpdateAsync(It.IsAny<Category>()), Times.Never);
+        }
+
+        [Test]
         public void DeleteAsync_ExistingCategory_ShouldSuccess()
         {
             _categoryService.Invoking(async x => await x.DeleteAsync(_existingCategory.Object.Id))

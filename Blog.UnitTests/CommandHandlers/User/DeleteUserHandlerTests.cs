@@ -31,7 +31,7 @@ namespace Blog.UnitTests.CommandHandlers.User
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new DeleteUser()
+            var command = new DeleteUser
             {
                 ResourceId = Guid.NewGuid()
             };

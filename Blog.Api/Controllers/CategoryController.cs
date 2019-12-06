@@ -50,6 +50,15 @@ namespace Blog.Api.Controllers
             return Created($"category/{command.ResourceId}", null);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategory command)
+        {
+            command.ResourceId = id;
+            await DispatchAsync(command);
+
+            return NoContent();
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id)

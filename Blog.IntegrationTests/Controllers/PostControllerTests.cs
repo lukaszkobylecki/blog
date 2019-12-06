@@ -21,7 +21,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetPosts_ShouldReturnData()
         {
-            var result = await GetResource<IEnumerable<PostDto>>(BaseUrl);
+            var result = await GetResourceAsync<IEnumerable<PostDto>>(BaseUrl);
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Should().NotBeEmpty();
@@ -32,7 +32,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(123);
 
-            var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<PostDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -42,7 +42,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(1);
 
-            var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<PostDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().Be(id);
@@ -65,7 +65,7 @@ namespace Blog.IntegrationTests.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<PostDto>(response.Headers.Location.ToString());
+            var result = await GetResourceAsync<PostDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().NotBe(Guid.Empty);
@@ -100,6 +100,67 @@ namespace Blog.IntegrationTests.Controllers
         }
 
         [Test]
+        public async Task UpdatePost_ExistingPost_ShouldSuccess()
+        {
+            var id = GuidHelper.GetGuidFromInt(1);
+
+            var command = new UpdatePost
+            {
+                CategoryId = GuidHelper.GetGuidFromInt(1),
+                Title = "  title ",
+                Content = "  content  ",
+            };
+            var payload = GetPayload(command);
+
+            var response = await Client.PutAsync($"{BaseUrl}/{id}", payload);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var result = await GetResourceAsync<PostDto>($"{BaseUrl}/{id}");
+
+            result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Data.Title.Should().Be("title");
+            result.Data.Content.Should().Be("content");
+            result.Data.CategoryId.Should().Be(GuidHelper.GetGuidFromInt(1));
+        }
+
+        [Test]
+        public async Task UpdatePost_NotExistingPost_ShouldReturnBadRequest()
+        {
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var command = new UpdatePost
+            {
+                CategoryId = GuidHelper.GetGuidFromInt(1),
+                Title = "  title ",
+                Content = "  content  ",
+            };
+            var payload = GetPayload(command);
+
+            var response = await Client.PutAsync($"{BaseUrl}/{id}", payload);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Test]
+        public async Task UpdatePost_NotExistingCategory_ShouldReturnBadRequest()
+        {
+            var id = GuidHelper.GetGuidFromInt(1);
+
+            var command = new UpdatePost
+            {
+                CategoryId = GuidHelper.GetGuidFromInt(123),
+                Title = "  title ",
+                Content = "  content  ",
+            };
+            var payload = GetPayload(command);
+
+            var response = await Client.PutAsync($"{BaseUrl}/{id}", payload);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Test]
         public async Task DeletePost_NotExisting_ShouldReturnBadRequest()
         {
             var id = GuidHelper.GetGuidFromInt(123);
@@ -118,7 +179,7 @@ namespace Blog.IntegrationTests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-            var result = await GetResource<PostDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<PostDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

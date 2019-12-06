@@ -22,7 +22,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetCategories_ShouldReturnData()
         {
-            var result = await GetResource<IEnumerable<CategoryDto>>(BaseUrl);
+            var result = await GetResourceAsync<IEnumerable<CategoryDto>>(BaseUrl);
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Should().NotBeEmpty();
@@ -33,7 +33,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(123);
 
-            var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<CategoryDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -43,7 +43,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(1);
 
-            var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<CategoryDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().Be(id);
@@ -64,7 +64,7 @@ namespace Blog.IntegrationTests.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<CategoryDto>(response.Headers.Location.ToString());
+            var result = await GetResourceAsync<CategoryDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().NotBe(Guid.Empty);
@@ -91,6 +91,43 @@ namespace Blog.IntegrationTests.Controllers
         }
 
         [Test]
+        public async Task UpdateCategory_ExistingCategory_ShouldSuccess()
+        {
+            var id = GuidHelper.GetGuidFromInt(1);
+
+            var command = new UpdateCategory
+            {
+                Name = "new-name"
+            };
+            var paylaod = GetPayload(command);
+
+            var response = await Client.PutAsync($"{BaseUrl}/{id}", paylaod);
+
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            var result = await GetResourceAsync<CategoryDto>($"{BaseUrl}/{id}");
+            
+            result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            result.Data.Name.Should().Be("new-name");
+        }
+
+        [Test]
+        public async Task UpdateCategory_NotExistingCategory_ShouldReturnBadRequest()
+        {
+            var id = GuidHelper.GetGuidFromInt(123);
+
+            var command = new UpdateCategory
+            {
+                Name = "new-name"
+            };
+            var paylaod = GetPayload(command);
+
+            var response = await Client.PutAsync($"{BaseUrl}/{id}", paylaod);
+
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Test]
         public async Task DeleteCategory_NotExisting_ShouldReturnBadRequest()
         {
             var id = GuidHelper.GetGuidFromInt(123);
@@ -109,7 +146,7 @@ namespace Blog.IntegrationTests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-            var result = await GetResource<CategoryDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<CategoryDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

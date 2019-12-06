@@ -12,6 +12,7 @@ namespace Blog.Infrastructure.Repositories
         Task<User> GetAsync(Guid id);
         Task<User> GetAsync(string email);
         Task CreateAsync(User user);
+        Task UpdateAsync(User user);
         Task DeleteAsync(User user);
     }
 }

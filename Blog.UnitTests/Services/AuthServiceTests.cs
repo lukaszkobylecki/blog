@@ -35,29 +35,29 @@ namespace Blog.UnitTests.Services
         }
 
         [Test]
-        public async Task LoginAsync_UserNotExist_ThrowsError()
+        public void LoginAsync_UserNotExist_ThrowsError()
         {
-            await _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, _newUser.Password))
+            _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, _newUser.Password))
                 .Should()
-                .ThrowAsync<ServiceException>()
-                .ContinueWith(x => x.Result.Which.Code.Should().Be(ErrorCodes.InvalidCredentials));
+                .Throw<ServiceException>()
+                .Which.Code.Should().Be(ErrorCodes.InvalidCredentials);
         }
 
         [Test]
-        public async Task LoginAsync_UserExistsButPasswordIsIncorrect_ThrowsError()
+        public void LoginAsync_UserExistsButPasswordIsIncorrect_ThrowsError()
         {
-            await _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, "foo"))
+            _authService.Invoking(async x => await x.LoginAsync(_newUser.Email, "foo"))
                 .Should()
-                .ThrowAsync<ServiceException>()
-                .ContinueWith(x => x.Result.Which.Code.Should().Be(ErrorCodes.InvalidCredentials));
+                .Throw<ServiceException>()
+                .Which.Code.Should().Be(ErrorCodes.InvalidCredentials);
         }
 
         [Test]
-        public async Task LoginAsync_ValidCredentials_ShouldSuccess()
+        public void LoginAsync_ValidCredentials_ShouldSuccess()
         {
-            await _authService.Invoking(async x => await x.LoginAsync(_existingUser.Email, _existingUser.Password))
+            _authService.Invoking(async x => await x.LoginAsync(_existingUser.Email, _existingUser.Password))
                 .Should()
-                .NotThrowAsync();
+                .NotThrow();
         }
     }
 }

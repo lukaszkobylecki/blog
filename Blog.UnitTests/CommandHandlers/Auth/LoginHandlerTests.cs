@@ -46,7 +46,7 @@ namespace Blog.UnitTests.CommandHandlers.Auth
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new Login()
+            var command = new Login
             {
                 Email = "  Email   ",
                 Password = " Password  ",

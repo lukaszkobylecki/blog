@@ -13,7 +13,7 @@ using System.Text;
 namespace Blog.UnitTests.CommandHandlers.Category
 {
     [TestFixture]
-    public class DeleteCategoryHadlerTests
+    public class DeleteCategoryHandlerTests
     {
         private DeleteCategoryHandler _handler;
         private Mock<ICategoryService> _categoryService;
@@ -31,7 +31,7 @@ namespace Blog.UnitTests.CommandHandlers.Category
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new DeleteCategory()
+            var command = new DeleteCategory
             {
                 ResourceId = Guid.NewGuid(),
             };

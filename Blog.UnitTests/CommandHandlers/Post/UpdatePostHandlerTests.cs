@@ -13,9 +13,9 @@ using System.Text;
 namespace Blog.UnitTests.CommandHandlers.Post
 {
     [TestFixture]
-    public class CreatePostHandlerTests
+    public class UpdatePostHandlerTests
     {
-        private CreatePostHandler _handler;
+        private UpdatePostHandler _handler;
         private Mock<IPostService> _postService;
         private Mock<IEventPublisher> _eventPublisher;
 
@@ -25,27 +25,26 @@ namespace Blog.UnitTests.CommandHandlers.Post
             _postService = new Mock<IPostService>();
             _eventPublisher = new Mock<IEventPublisher>();
 
-            _handler = new CreatePostHandler(_postService.Object, _eventPublisher.Object);
+            _handler = new UpdatePostHandler(_postService.Object, _eventPublisher.Object);
         }
 
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new CreatePost
+            var command = new UpdatePost
             {
                 ResourceId = Guid.NewGuid(),
-                CategoryId = Guid.NewGuid(),
+                Title = "title",
                 Content = "content",
-                Title = "title"
+                CategoryId = Guid.NewGuid()
             };
 
             _handler.Invoking(async x => await x.HandleAsync(command))
                 .Should()
                 .NotThrow();
 
-            _postService.Verify(x => x.CreateAsync(command.ResourceId, command.Title, command.Content, command.CategoryId), Times.Once);
-            _postService.Verify(x => x.GetOrFailAsync(command.ResourceId), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<PostCreated>()), Times.Once);
+            _postService.Verify(x => x.UpdateAsync(command.ResourceId, command.Title, command.Content, command.CategoryId), Times.Once);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<PostUpdated>()), Times.Once);
         }
     }
 }

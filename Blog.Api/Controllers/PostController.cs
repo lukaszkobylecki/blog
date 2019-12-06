@@ -49,6 +49,15 @@ namespace Blog.Api.Controllers
             return Created($"post/{command.ResourceId}", null);
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePost command)
+        {
+            command.ResourceId = id;
+            await DispatchAsync(command);
+
+            return NoContent();
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeletePost(Guid id)

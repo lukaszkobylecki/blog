@@ -54,6 +54,18 @@ namespace Blog.Infrastructure.Services
             await _postRepository.CreateAsync(post);
         }
 
+        public async Task UpdateAsync(Guid id, string title, string content, Guid categoryId)
+        {
+            var post = await _postRepository.GetOrFailAsync(id);
+            var category = await _categoryRepository.GetOrFailAsync(categoryId);
+
+            post.SetTitle(title);
+            post.SetContent(content);
+            post.SetCategory(category);
+
+            await _postRepository.UpdateAsync(post);
+        }
+
         public async Task DeleteAsync(Guid id)
         {
             var post = await _postRepository.GetOrFailAsync(id);

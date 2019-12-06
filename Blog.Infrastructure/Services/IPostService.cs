@@ -12,6 +12,7 @@ namespace Blog.Infrastructure.Services
         Task<PostDto> GetAsync(Guid id);
         Task<PostDto> GetOrFailAsync(Guid id);
         Task CreateAsync(Guid id, string title, string content, Guid categoryId);
+        Task UpdateAsync(Guid id, string title, string content, Guid categoryId);
         Task DeleteAsync(Guid id);
     }
 }

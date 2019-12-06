@@ -23,7 +23,7 @@ namespace Blog.IntegrationTests.Controllers
         [Test]
         public async Task GetUsers_ShouldReturnData()
         {
-            var result = await GetResource<IEnumerable<UserDto>>(BaseUrl);
+            var result = await GetResourceAsync<IEnumerable<UserDto>>(BaseUrl);
 
             result.Response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.OK);
             result.Data.Should().NotBeEmpty();
@@ -34,7 +34,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(123);
 
-            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.NotFound);
         }
@@ -44,7 +44,7 @@ namespace Blog.IntegrationTests.Controllers
         {
             var id = GuidHelper.GetGuidFromInt(1);
 
-            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().Be(id);
@@ -67,7 +67,7 @@ namespace Blog.IntegrationTests.Controllers
             response.StatusCode.Should().BeEquivalentTo(HttpStatusCode.Created);
             response.Headers.Location.ToString().Should().NotBeNullOrWhiteSpace();
 
-            var result = await GetResource<UserDto>(response.Headers.Location.ToString());
+            var result = await GetResourceAsync<UserDto>(response.Headers.Location.ToString());
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.OK);
             result.Data.Id.Should().NotBe(Guid.Empty);
@@ -136,7 +136,7 @@ namespace Blog.IntegrationTests.Controllers
 
             response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-            var result = await GetResource<UserDto>($"{BaseUrl}/{id}");
+            var result = await GetResourceAsync<UserDto>($"{BaseUrl}/{id}");
 
             result.Response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }

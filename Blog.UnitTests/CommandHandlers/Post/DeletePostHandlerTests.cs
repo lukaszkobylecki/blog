@@ -31,7 +31,7 @@ namespace Blog.UnitTests.CommandHandlers.Post
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new DeletePost()
+            var command = new DeletePost
             {
                 ResourceId = Guid.NewGuid()
             };

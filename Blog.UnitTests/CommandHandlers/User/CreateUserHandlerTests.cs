@@ -35,7 +35,7 @@ namespace Blog.UnitTests.CommandHandlers.User
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new CreateUser()
+            var command = new CreateUser
             {
                 Email = "email",
                 Password = "password",

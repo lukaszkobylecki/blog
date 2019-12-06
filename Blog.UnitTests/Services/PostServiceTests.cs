@@ -31,6 +31,7 @@ namespace Blog.UnitTests.Services
 
             _postRepository = new Mock<IPostRepository>();
             _postRepository.Setup(x => x.GetAsync(_existingPost.Object.Id)).ReturnsAsync(_existingPost.Object);
+            _postRepository.Setup(x => x.GetAsync(GuidHelper.GetGuidFromInt(100))).ReturnsAsync(() => null);
 
             var categoryRepository = new Mock<ICategoryRepository>();
             categoryRepository.Setup(x => x.GetAsync(categoryMock.Object.Id)).ReturnsAsync(categoryMock.Object);
@@ -76,6 +77,39 @@ namespace Blog.UnitTests.Services
 
             _postRepository.Verify(x => x.CreateAsync(It.IsAny<Post>()), Times.Never);
         }
+
+        [Test]
+        public void UpdateAsync_ExistingPost_ShouldSuccess()
+        {
+            _postService.Invoking(async x => await x.UpdateAsync(_existingPost.Object.Id, MockProvider.RandomString, MockProvider.RandomString, GuidHelper.GetGuidFromInt(1)))
+                .Should()
+                .NotThrow();
+
+            _postRepository.Verify(x => x.UpdateAsync(It.IsAny<Post>()), Times.Once);
+        }
+
+        [Test]
+        public void UpdateAsync_NotExistingPost_ShouldThrowError()
+        {
+            _postService.Invoking(async x => await x.UpdateAsync(GuidHelper.GetGuidFromInt(100), MockProvider.RandomString, MockProvider.RandomString, GuidHelper.GetGuidFromInt(1)))
+                .Should()
+                .Throw<ServiceException>()
+                .And.Code.Should().Be(ErrorCodes.PostNotFound);
+
+            _postRepository.Verify(x => x.UpdateAsync(It.IsAny<Post>()), Times.Never);
+        }
+
+        [Test]
+        public void UpdateAsync_NotExistingCategory_ShouldThrowError()
+        {
+            _postService.Invoking(async x => await x.CreateAsync(GuidHelper.GetGuidFromInt(1), MockProvider.RandomString, MockProvider.RandomString, GuidHelper.GetGuidFromInt(100)))
+                .Should()
+                .Throw<ServiceException>()
+                .And.Code.Should().Be(ErrorCodes.CategoryNotFound);
+
+            _postRepository.Verify(x => x.UpdateAsync(It.IsAny<Post>()), Times.Never);
+        }
+
 
         [Test]
         public void DeleteAsync_ExistingPost_ShouldSuccess()

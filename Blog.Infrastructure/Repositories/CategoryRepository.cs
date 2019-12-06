@@ -29,6 +29,13 @@ namespace Blog.Infrastructure.Repositories
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task UpdateAsync(Category category)
+        {
+            _dbContext.Categories.Update(category);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(Category category)
         {
             _dbContext.Categories.Remove(category);

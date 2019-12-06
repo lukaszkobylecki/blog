@@ -13,9 +13,9 @@ using System.Text;
 namespace Blog.UnitTests.CommandHandlers.Category
 {
     [TestFixture]
-    public class CreateCategoryHandlerTests
+    public class UpdateCategoryHandlerTests
     {
-        private CreateCategoryHandler _handler;
+        private UpdateCategoryHandler _handler;
         private Mock<ICategoryService> _categoryService;
         private Mock<IEventPublisher> _eventPublisher;
 
@@ -25,25 +25,24 @@ namespace Blog.UnitTests.CommandHandlers.Category
             _categoryService = new Mock<ICategoryService>();
             _eventPublisher = new Mock<IEventPublisher>();
 
-            _handler = new CreateCategoryHandler(_categoryService.Object, _eventPublisher.Object);
+            _handler = new UpdateCategoryHandler(_categoryService.Object, _eventPublisher.Object);
         }
 
         [Test]
         public void HandleAsync_ShouldInvokeSpecificMethods()
         {
-            var command = new CreateCategory
+            var command = new UpdateCategory
             {
                 ResourceId = Guid.NewGuid(),
-                Name = "name"
+                Name = "new-name"
             };
 
             _handler.Invoking(async x => await x.HandleAsync(command))
                 .Should()
                 .NotThrow();
 
-            _categoryService.Verify(x => x.CreateAsync(command.ResourceId, command.Name), Times.Once);
-            _categoryService.Verify(x => x.GetOrFailAsync(command.ResourceId), Times.Once);
-            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<CategoryCreated>()), Times.Once);
+            _categoryService.Verify(x => x.UpdateAsync(command.ResourceId, command.Name), Times.Once);
+            _eventPublisher.Verify(x => x.PublishAsync(It.IsAny<CategoryUpdated>()), Times.Once);
         }
     }
 }

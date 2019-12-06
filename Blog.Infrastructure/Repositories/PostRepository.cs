@@ -34,6 +34,12 @@ namespace Blog.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(Post post)
+        {
+            _dbContext.Posts.Update(post);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteAsync(Post post)
         {
             _dbContext.Posts.Remove(post);
