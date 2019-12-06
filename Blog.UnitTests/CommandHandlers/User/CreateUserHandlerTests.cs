@@ -1,9 +1,9 @@
 ﻿using Blog.Common.Helpers;
-using Blog.Infrastructure.CommandHandlers.User;
-using Blog.Infrastructure.Commands.User;
+using Blog.Infrastructure.Command.Handlers.User;
+using Blog.Infrastructure.Command.Commands.User;
 using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events.User;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events.User;
 using Blog.Infrastructure.Services;
 using Blog.UnitTests.Mocks;
 using FluentAssertions;

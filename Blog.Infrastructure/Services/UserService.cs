@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Blog.Core.Domain;
 using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.EventHandlers;
+using Blog.Infrastructure.Event.Handlers;
 using Blog.Infrastructure.Exceptions;
 using Blog.Infrastructure.Extensions;
 using Blog.Infrastructure.Repositories;

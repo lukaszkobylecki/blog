@@ -4,7 +4,7 @@ using Blog.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Blog.Infrastructure.EventHandlers;
+using Blog.Infrastructure.Event.Handlers;
 using System.Linq;
 
 namespace Blog.UnitTests.Mocks

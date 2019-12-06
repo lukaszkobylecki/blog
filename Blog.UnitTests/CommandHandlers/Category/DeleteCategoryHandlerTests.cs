@@ -1,7 +1,7 @@
-﻿using Blog.Infrastructure.CommandHandlers.Category;
-using Blog.Infrastructure.Commands.Category;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events.Category;
+﻿using Blog.Infrastructure.Command.Handlers.Category;
+using Blog.Infrastructure.Command.Commands.Category;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events.Category;
 using Blog.Infrastructure.Services;
 using FluentAssertions;
 using Moq;

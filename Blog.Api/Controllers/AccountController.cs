@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blog.Infrastructure.CommandHandlers;
-using Blog.Infrastructure.Commands.Account;
+using Blog.Infrastructure.Command.Handlers;
+using Blog.Infrastructure.Command.Commands.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

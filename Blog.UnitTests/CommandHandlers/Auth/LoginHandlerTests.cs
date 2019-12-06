@@ -1,11 +1,11 @@
 ﻿using Blog.Common.Extensions;
 using Blog.Common.Helpers;
-using Blog.Infrastructure.CommandHandlers.Auth;
-using Blog.Infrastructure.Commands;
-using Blog.Infrastructure.Commands.Auth;
+using Blog.Infrastructure.Command.Handlers.Auth;
+using Blog.Infrastructure.Command.Commands;
+using Blog.Infrastructure.Command.Commands.Auth;
 using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events.Auth;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events.Auth;
 using Blog.Infrastructure.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Memory;

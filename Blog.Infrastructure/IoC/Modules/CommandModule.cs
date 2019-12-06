@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Autofac;
-using Blog.Infrastructure.CommandHandlers;
+using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.Services;
 
 namespace Blog.Infrastructure.IoC.Modules

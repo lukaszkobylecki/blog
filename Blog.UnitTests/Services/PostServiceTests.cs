@@ -1,7 +1,7 @@
 ﻿using Blog.Common.Helpers;
 using Blog.Core.Domain;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events;
 using Blog.Infrastructure.Exceptions;
 using Blog.Infrastructure.Repositories;
 using Blog.Infrastructure.Services;

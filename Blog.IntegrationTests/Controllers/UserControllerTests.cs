@@ -1,5 +1,5 @@
 ﻿using Blog.Common.Helpers;
-using Blog.Infrastructure.Commands.User;
+using Blog.Infrastructure.Command.Commands.User;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using Newtonsoft.Json;

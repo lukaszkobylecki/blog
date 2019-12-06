@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Blog.Infrastructure.Commands.User;
+using Blog.Infrastructure.Command.Commands.User;
 using Blog.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blog.Infrastructure.CommandHandlers;
+using Blog.Infrastructure.Command.Handlers;
 using Microsoft.Extensions.Caching.Memory;
 using Blog.Infrastructure.DTO;
 

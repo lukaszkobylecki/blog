@@ -1,4 +1,4 @@
-﻿using Blog.Infrastructure.Commands.Auth;
+﻿using Blog.Infrastructure.Command.Commands.Auth;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using NUnit.Framework;

@@ -1,6 +1,6 @@
 ﻿using Autofac.Extensions.DependencyInjection;
 using Blog.IntegrationTests.Results;
-using Blog.Infrastructure.Commands.Auth;
+using Blog.Infrastructure.Command.Commands.Auth;
 using Blog.Infrastructure.DTO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;

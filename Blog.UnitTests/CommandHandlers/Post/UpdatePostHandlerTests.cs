@@ -1,7 +1,7 @@
-﻿using Blog.Infrastructure.CommandHandlers.Post;
-using Blog.Infrastructure.Commands.Post;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events.Post;
+﻿using Blog.Infrastructure.Command.Handlers.Post;
+using Blog.Infrastructure.Command.Commands.Post;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events.Post;
 using Blog.Infrastructure.Services;
 using FluentAssertions;
 using Moq;

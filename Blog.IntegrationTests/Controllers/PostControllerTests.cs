@@ -1,5 +1,5 @@
 ﻿using Blog.Common.Helpers;
-using Blog.Infrastructure.Commands.Post;
+using Blog.Infrastructure.Command.Commands.Post;
 using Blog.Infrastructure.DTO;
 using FluentAssertions;
 using NUnit.Framework;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Blog.Core.Domain;
 using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.EventHandlers;
+using Blog.Infrastructure.Event.Handlers;
 using Blog.Infrastructure.Extensions;
 using Blog.Infrastructure.Repositories;
 

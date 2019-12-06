@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Autofac;
-using Blog.Infrastructure.EventHandlers;
-using Blog.Infrastructure.Events;
+using Blog.Infrastructure.Event.Handlers;
+using Blog.Infrastructure.Event.Events;
 
 namespace Blog.Infrastructure.IoC.Modules
 {

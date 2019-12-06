@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Blog.Infrastructure.Commands;
+using Blog.Infrastructure.Command.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Blog.Infrastructure.CommandHandlers;
+using Blog.Infrastructure.Command.Handlers;
 
 namespace Blog.Api.Controllers
 {
@@ -27,7 +27,7 @@ namespace Blog.Api.Controllers
             if (command is IAuthenticatedCommand authenticatedCommand)
                 authenticatedCommand.CurrentUserId = UserId;
 
-            command.Request = Infrastructure.Commands.Request.Create(Guid.NewGuid(), Request.Host.ToString(), Request.Path, Request.Method);
+            command.Request = Infrastructure.Command.Commands.Request.Create(Guid.NewGuid(), Request.Host.ToString(), Request.Path, Request.Method);
 
             await _commandDispatcher.DispatchAsync(command);
         }
