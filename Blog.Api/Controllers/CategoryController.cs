@@ -9,23 +9,22 @@ using Blog.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Blog.Infrastructure.Query.Handlers;
+using Blog.Infrastructure.Query.Queries.Category;
 
 namespace Blog.Api.Controllers
 {
     public class CategoryController : ApiControllerBase
     {
-        private readonly ICategoryService _categoryService;
-
-        public CategoryController(ICommandDispatcher commandDispatcher, ICategoryService categoryService) 
-            : base(commandDispatcher)
+        public CategoryController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher) 
+            : base(commandDispatcher, queryDispatcher)
         {
-            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = await _categoryService.BrowseAsync();
+            var categories = await FetchAsync(new GetCategories());
 
             return Ok(categories);
         }
@@ -34,7 +33,7 @@ namespace Blog.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetCategory([FromRoute] Guid id)
         {
-            var category = await _categoryService.GetAsync(id);
+            var category = await FetchAsync(new GetCategory { Id = id });
             if (category == null)
                 return NotFound();
 

@@ -21,7 +21,8 @@ namespace Blog.Infrastructure.IoC.Modules
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<EventPublisher>()
-                .As<IEventPublisher>();
+                .As<IEventPublisher>()
+                .InstancePerLifetimeScope();
         }
     }
 }

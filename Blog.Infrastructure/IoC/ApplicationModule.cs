@@ -21,6 +21,7 @@ namespace Blog.Infrastructure.IoC
             builder.RegisterModule(new SettingsModule(_configuration));
             builder.RegisterModule<RepositoryModule>();
             builder.RegisterModule<CommandModule>();
+            builder.RegisterModule<QueryModule>();
             builder.RegisterModule<EventModule>();
             builder.RegisterModule<MapperModule>();
             builder.RegisterModule<ServiceModule>();

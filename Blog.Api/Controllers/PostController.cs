@@ -8,23 +8,22 @@ using Blog.Infrastructure.DTO;
 using Blog.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Blog.Infrastructure.Query.Handlers;
+using Blog.Infrastructure.Query.Queries.Post;
 
 namespace Blog.Api.Controllers
 {
     public class PostController : ApiControllerBase
     {
-        private readonly IPostService _postService;
-
-        public PostController(ICommandDispatcher commandDispatcher, IPostService postService) 
-            : base(commandDispatcher)
+        public PostController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher) 
+            : base(commandDispatcher, queryDispatcher)
         {
-            _postService = postService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetPosts()
         {
-            var posts = await _postService.BrowseAsync();
+            var posts = await FetchAsync(new GetPosts());
 
             return Ok(posts);
         }
@@ -33,7 +32,7 @@ namespace Blog.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetPost(Guid id)
         {
-            var post = await _postService.GetAsync(id);
+            var post = await FetchAsync(new GetPost { Id = id });
             if (post == null)
                 return NotFound();
 

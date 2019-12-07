@@ -8,6 +8,7 @@ using Blog.Infrastructure.Command.Commands.Auth;
 using Blog.Infrastructure.Extensions;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.DTO;
+using Blog.Infrastructure.Query.Handlers;
 
 namespace Blog.Api.Controllers
 {
@@ -15,8 +16,9 @@ namespace Blog.Api.Controllers
     {
         private readonly IMemoryCache _cache;
 
-        public AuthController(ICommandDispatcher commandDispatcher, IMemoryCache cache) 
-            : base(commandDispatcher)
+        public AuthController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher,
+            IMemoryCache cache) 
+            : base(commandDispatcher, queryDispatcher)
         {
             _cache = cache;
         }

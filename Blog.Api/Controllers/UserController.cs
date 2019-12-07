@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿    using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Infrastructure.Command.Commands.User;
 using Blog.Infrastructure.Services;
@@ -9,23 +9,22 @@ using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
 using Microsoft.Extensions.Caching.Memory;
 using Blog.Infrastructure.DTO;
+using Blog.Infrastructure.Query.Handlers;
+using Blog.Infrastructure.Query.Queries.User;
 
 namespace Blog.Api.Controllers
 {
     public class UserController : ApiControllerBase
     {
-        private readonly IUserService _userService;
-
-        public UserController(ICommandDispatcher commandDispatcher, IUserService userService)
-            : base(commandDispatcher)
+        public UserController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+            : base(commandDispatcher, queryDispatcher)
         {
-            _userService = userService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.BrowseAsync();
+            var users = await FetchAsync(new GetUsers());
 
             return Ok(users);
         }
@@ -34,7 +33,7 @@ namespace Blog.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
         {
-            var user = await _userService.GetAsync(id);
+            var user = await FetchAsync(new GetUser { Id = id });
             if (user == null)
                 return NotFound();
 

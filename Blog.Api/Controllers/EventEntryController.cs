@@ -3,25 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
-using Blog.Infrastructure.Services;
+using Blog.Infrastructure.Query.Handlers;
+using Blog.Infrastructure.Query.Queries.EventEntry;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Api.Controllers
 {
     public class EventEntryController : ApiControllerBase
     {
-        private readonly IEventEntryService _eventEntryService;
-
-        public EventEntryController(ICommandDispatcher commandDispatcher, IEventEntryService eventEntryService) 
-            : base(commandDispatcher)
+        public EventEntryController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher) 
+            : base(commandDispatcher, queryDispatcher)
         {
-            _eventEntryService = eventEntryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetEventEntries()
         {
-            var eventEntries = await _eventEntryService.BrowseAsync();
+            var eventEntries = await FetchAsync(new GetEventEntries());
 
             return Ok(eventEntries);
         }
