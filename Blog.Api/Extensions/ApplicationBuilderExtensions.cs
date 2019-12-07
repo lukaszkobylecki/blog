@@ -2,10 +2,6 @@
 using Blog.Infrastructure.Services;
 using Blog.Infrastructure.Settings;
 using Microsoft.AspNetCore.Builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Blog.Api.Extensions
 {

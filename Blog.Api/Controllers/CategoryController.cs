@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.Command.Commands.Category;
-using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Blog.Infrastructure.Query.Handlers;
 using Blog.Infrastructure.Query.Queries.Category;
+using Blog.Api.Extensions;
 
 namespace Blog.Api.Controllers
 {
@@ -23,49 +18,22 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetCategories()
-        {
-            var categories = await FetchAsync(new GetCategories());
+            => await FetchCollection(new GetCategories());
 
-            return Ok(categories);
-        }
-
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory([FromRoute] Guid id)
-        {
-            var category = await FetchAsync(new GetCategory { Id = id });
-            if (category == null)
-                return NotFound();
-
-            return Ok(category);
-        }
+            => await FetchSingle(new GetCategory().Bind(x => x.Id, id));
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategory command)
-        {
-            command.ResourceId = Guid.NewGuid();
-            await DispatchAsync(command);
-
-            return Created($"category/{command.ResourceId}", null);
-        }
+            => await CreateAsync(command.Bind(x => x.ResourceId, Guid.NewGuid()), "category");
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategory command)
-        {
-            command.ResourceId = id;
-            await DispatchAsync(command);
+            => await ExecuteAsync(command.Bind(x => x.ResourceId, id));
 
-            return NoContent();
-        }
-
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory(Guid id)
-        {
-            var command = new DeleteCategory { ResourceId = id };
-            await DispatchAsync(command);
-
-            return NoContent();
-        }
+            => await ExecuteAsync(new DeleteCategory().Bind(x => x.ResourceId, id));
     }
 }

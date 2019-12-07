@@ -5,11 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Blog.Infrastructure.Database;
 using Blog.Infrastructure.Extensions;
 using Blog.Infrastructure.Settings;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Blog.Api.Extensions
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.Command.Commands.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -12,18 +9,14 @@ namespace Blog.Api.Controllers
 {
     public class AccountController : ApiControllerBase
     {
-        public AccountController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher) 
+        public AccountController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
             : base(commandDispatcher, queryDispatcher)
         {
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePassword command)
-        {
-            await DispatchAsync(command);
-
-            return Ok();
-        }
+            => await ExecuteAsync(command);
     }
 }

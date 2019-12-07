@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.Query.Handlers;
 using Blog.Infrastructure.Query.Queries.EventEntry;
@@ -18,10 +15,6 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetEventEntries()
-        {
-            var eventEntries = await FetchAsync(new GetEventEntries());
-
-            return Ok(eventEntries);
-        }
+            => await FetchCollection(new GetEventEntries());
     }
 }

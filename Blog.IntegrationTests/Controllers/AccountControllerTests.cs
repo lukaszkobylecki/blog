@@ -33,10 +33,10 @@ namespace Blog.IntegrationTests.Controllers
             var payload = GetPayload(command);
 
             await AddAuthTokenAsync("user9@email.com", "password");
-            var response = await Client.PostAsync(BaseUrl, payload);
+            var response = await Client.PutAsync(BaseUrl, payload);
             RemoveAuthToken();
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
             await AddAuthTokenAsync("user9@email.com", "password2");
             RemoveAuthToken();

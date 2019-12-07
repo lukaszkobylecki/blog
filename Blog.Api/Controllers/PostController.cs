@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.Command.Commands.Post;
-using Blog.Infrastructure.DTO;
-using Blog.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Blog.Infrastructure.Query.Handlers;
 using Blog.Infrastructure.Query.Queries.Post;
+using Blog.Api.Extensions;
 
 namespace Blog.Api.Controllers
 {
@@ -22,49 +18,22 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetPosts()
-        {
-            var posts = await FetchAsync(new GetPosts());
+            => await FetchCollection(new GetPosts());
 
-            return Ok(posts);
-        }
-
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPost(Guid id)
-        {
-            var post = await FetchAsync(new GetPost { Id = id });
-            if (post == null)
-                return NotFound();
-
-            return Ok(post);
-        }
+            => await FetchSingle(new GetPost().Bind(x => x.Id, id));
 
         [HttpPost]
         public async Task<IActionResult> CreatePost([FromBody] CreatePost command)
-        {
-            command.ResourceId = Guid.NewGuid();
-            await DispatchAsync(command);
-
-            return Created($"post/{command.ResourceId}", null);
-        }
+            => await CreateAsync(command.Bind(x => x.ResourceId, Guid.NewGuid()), "post");
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePost command)
-        {
-            command.ResourceId = id;
-            await DispatchAsync(command);
+            => await ExecuteAsync(command.Bind(x => x.ResourceId, id));
 
-            return NoContent();
-        }
-
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(Guid id)
-        {
-            var command = new DeletePost { ResourceId = id };
-            await DispatchAsync(command);
-
-            return NoContent();
-        }
+            => await ExecuteAsync(new DeletePost().Bind(x => x.ResourceId, id));
     }
 }

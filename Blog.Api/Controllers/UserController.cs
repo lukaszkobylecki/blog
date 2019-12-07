@@ -1,16 +1,12 @@
-﻿    using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Infrastructure.Command.Commands.User;
-using Blog.Infrastructure.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Blog.Infrastructure.Command.Handlers;
-using Microsoft.Extensions.Caching.Memory;
-using Blog.Infrastructure.DTO;
 using Blog.Infrastructure.Query.Handlers;
 using Blog.Infrastructure.Query.Queries.User;
+using Blog.Api.Extensions;
 
 namespace Blog.Api.Controllers
 {
@@ -23,41 +19,19 @@ namespace Blog.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetUsers()
-        {
-            var users = await FetchAsync(new GetUsers());
+            => await FetchCollection(new GetUsers());
 
-            return Ok(users);
-        }
-
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(Guid id)
-        {
-            var user = await FetchAsync(new GetUser { Id = id });
-            if (user == null)
-                return NotFound();
-
-            return Ok(user);
-        }
+            => await FetchSingle(new GetUser().Bind(x => x.Id, id));
 
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUser command)
-        {
-            command.ResourceId = Guid.NewGuid();
-            await DispatchAsync(command);
-
-            return Created($"user/{command.ResourceId}", null);
-        }
+            => await CreateAsync(command.Bind(x => x.ResourceId, Guid.NewGuid()), "user");
 
         [Authorize]
-        [Route("{id}")]
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            var command = new DeleteUser { ResourceId = id };
-            await DispatchAsync(command);
-
-            return NoContent();
-        }
+            => await ExecuteAsync(new DeleteUser().Bind(x => x.ResourceId, id));
     }
 }

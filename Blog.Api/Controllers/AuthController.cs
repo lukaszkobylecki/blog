@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Blog.Infrastructure.Command.Commands.Auth;
-using Blog.Infrastructure.Extensions;
 using Blog.Infrastructure.Command.Handlers;
 using Blog.Infrastructure.DTO;
 using Blog.Infrastructure.Query.Handlers;
